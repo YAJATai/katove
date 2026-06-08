@@ -18,6 +18,57 @@ const fallbackCategories: Category[] = [
   { id: "cat-7", name: "Frames", slug: "frames", description: "Luxury eyewear", created_at: "" },
 ];
 
+const fallbackLatestProducts: Product[] = [
+  {
+    id: "lv-bag",
+    name: "louis vuitton Bag",
+    slug: "lv-bag",
+    description: "Louis Vuitton luxury bag",
+    price: 300.00,
+    image_url: "https://i.ibb.co/8L6zccv0/1773330962788-20fb4c93.webp",
+    category_id: "cat-4",
+    categories: { name: "Louis Vuitton", slug: "louis-vuitton" },
+    is_top_pick: false,
+    created_at: ""
+  },
+  {
+    id: "lv-wallet-1",
+    name: "louis vuitton Wallet",
+    slug: "lv-wallet-1",
+    description: "Louis Vuitton luxury wallet",
+    price: 130.00,
+    image_url: "https://i.ibb.co/Mk376wqV/1773329923211-2f148b38.jpg",
+    category_id: "cat-4",
+    categories: { name: "Louis Vuitton", slug: "louis-vuitton" },
+    is_top_pick: false,
+    created_at: ""
+  },
+  {
+    id: "goyard-1",
+    name: "Goyard",
+    slug: "goyard-1",
+    description: "Goyard exclusive accessory",
+    price: 40.00,
+    image_url: "https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg",
+    category_id: "cat-6",
+    categories: { name: "Goyard", slug: "goyard" },
+    is_top_pick: false,
+    created_at: ""
+  },
+  {
+    id: "goyard-2",
+    name: "Goyard",
+    slug: "goyard-2",
+    description: "Goyard exclusive accessory",
+    price: 50.00,
+    image_url: "https://i.ibb.co/YBnqxRbH/1773330768070-ac7832d7.jpg",
+    category_id: "cat-6",
+    categories: { name: "Goyard", slug: "goyard" },
+    is_top_pick: false,
+    created_at: ""
+  }
+];
+
 const fallbackProducts: Product[] = [
   { id: "prod-1", name: "Rolex Daytona 116500LN", slug: "rolex-daytona", description: "Ceramic bezel, white dial. The definitive chronograph.", price: 32500, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-1", categories: { name: "Rolex", slug: "rolex" }, is_top_pick: true, created_at: "" },
   { id: "prod-2", name: "AP Royal Oak 15500ST", slug: "ap-royal-oak", description: "Blue dial, steel bracelet. Iconic octagonal bezel.", price: 42500, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-2", categories: { name: "Audemars Piguet", slug: "audemars-piguet" }, is_top_pick: true, created_at: "" },
@@ -28,7 +79,7 @@ const fallbackProducts: Product[] = [
 
 function SkeletonCard() {
   return (
-    <div className="min-w-[280px] rounded-xl bg-[var(--color-surface-overlay)] border border-[var(--color-border-default)] overflow-hidden flex-shrink-0">
+    <div className="min-w-[280px] md:min-w-[320px] rounded-xl bg-[var(--color-surface-overlay)] border border-[var(--color-border-default)] overflow-hidden flex-shrink-0">
       <div className="aspect-[3/4] skeleton rounded-none" />
     </div>
   );
@@ -36,7 +87,7 @@ function SkeletonCard() {
 
 export default function HomePage() {
   const [categories, setCategories] = useState<Category[]>(fallbackCategories);
-  const [latestProducts, setLatestProducts] = useState<Product[]>(fallbackProducts);
+  const [latestProducts, setLatestProducts] = useState<Product[]>(fallbackLatestProducts);
   const [topProducts, setTopProducts] = useState<Product[]>(fallbackProducts);
   const [loadingLatest, setLoadingLatest] = useState(true);
   const [loadingTop, setLoadingTop] = useState(true);
@@ -61,7 +112,37 @@ export default function HomePage() {
           supabase.from("products").select("*, categories!inner(name, slug)").eq("is_top_pick", true).limit(10),
         ]);
         if (cats && cats.length > 0) setCategories(cats);
-        if (latest && latest.length > 0) setLatestProducts(latest);
+        
+        // Use DB latest products but override incorrect images if necessary
+        if (latest && latest.length > 0) {
+          const mappedLatest = latest.map((p: any) => {
+            if (p.image_url === "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg" && p.name.toLowerCase().includes("louis vuitton")) {
+              return { ...p, image_url: "https://i.ibb.co/Mk376wqV/1773329923211-2f148b38.jpg" };
+            }
+            return p;
+          });
+          
+          // Re-order to match screen: Bag, Wallet, Goyard 40, Goyard 50
+          const orderedLatest: Product[] = [];
+          const bag = mappedLatest.find((p: any) => p.slug === "lv-bag");
+          const wallet = mappedLatest.find((p: any) => p.slug === "lv-wallet-1");
+          const goyard1 = mappedLatest.find((p: any) => p.slug === "goyard-1");
+          const goyard2 = mappedLatest.find((p: any) => p.slug === "goyard-2");
+          
+          if (bag) orderedLatest.push(bag);
+          if (wallet) orderedLatest.push(wallet);
+          if (goyard1) orderedLatest.push(goyard1);
+          if (goyard2) orderedLatest.push(goyard2);
+          
+          // Add remaining products
+          mappedLatest.forEach((p: any) => {
+            if (!orderedLatest.some(ol => ol.id === p.id)) {
+              orderedLatest.push(p);
+            }
+          });
+          
+          setLatestProducts(orderedLatest);
+        }
         if (top && top.length > 0) setTopProducts(top);
       } catch {}
       setLoadingLatest(false);
@@ -121,9 +202,9 @@ export default function HomePage() {
                 latestProducts.slice(0, 8).map((product, idx) => (
                   <div
                     key={product.id}
-                    className="group min-w-[280px] rounded-xl overflow-hidden bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] flex-shrink-0 card-hover hover:border-[var(--color-border-accent)]"
+                    className="group min-w-[280px] md:min-w-[320px] rounded-2xl overflow-hidden bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] flex-shrink-0 card-hover hover:border-[var(--color-border-accent)] aspect-[3/4] relative"
                   >
-                    <Link href={`/collections?product=${product.slug}`} className="block aspect-[3/4] relative overflow-hidden bg-[var(--color-surface-overlay)]">
+                    <Link href={`/collections?product=${product.slug}`} className="block w-full h-full relative overflow-hidden bg-[var(--color-surface-overlay)]">
                       {product.image_url ? (
                         <img
                           src={product.image_url}
@@ -135,14 +216,27 @@ export default function HomePage() {
                           <ShoppingBag className="w-10 h-10 text-[var(--color-text-tertiary)]" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <div className="absolute bottom-4 left-4 right-4 z-10">
+                      
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                      
+                      {/* New Arrival Badge on first item */}
+                      {idx === 0 && (
+                        <div className="absolute top-4 left-4 z-20">
+                          <span className="bg-[#22c55e] text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                            New Arrival
+                          </span>
+                        </div>
+                      )}
+                      
+                      {/* Product Info */}
+                      <div className="absolute bottom-5 left-5 right-5 z-10">
                         <div className="flex items-end justify-between">
                           <div>
-                            <p className="text-white text-sm font-bold leading-tight line-clamp-1">{product.name}</p>
-                            <p className="text-[var(--color-brand-400)] text-xs font-bold mt-1">₾{product.price.toFixed(2)}</p>
+                            <p className="text-white text-base font-bold leading-tight tracking-tight">{product.name}</p>
+                            <p className="text-[#ccff00] text-sm font-bold mt-1.5">₾{product.price.toFixed(2)}</p>
                           </div>
-                          <span className="text-[10px] text-white font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-200 shrink-0">
+                          <span className="text-xs text-white font-bold uppercase tracking-wider underline hover:text-[#ccff00] transition-colors duration-150 shrink-0">
                             Shop Now
                           </span>
                         </div>
