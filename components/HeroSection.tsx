@@ -4,95 +4,92 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
 
+interface HeroSlide {
+  id: string;
+  badge_label: string;
+  title: string;
+  subtitle: string;
+  accent_color: string;
+  button_color: string;
+  image_url: string;
+  discount_text: string;
+}
+
 const FALLBACK_IMAGE =
   "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg";
 
-interface Slide {
-  image_url: string;
-  label: string;
-  title: string;
-  desc: string;
-  discount: string;
-  cta: string;
-}
-
-const defaultSlides: Slide[] = [
+const defaultSlides: HeroSlide[] = [
   {
+    id: "1",
+    badge_label: "IMMERSIVE AUDIO",
+    title: "Hear Every Footstep Clearly",
+    subtitle:
+      "Precision spatial audio that puts you right in the center of the action.",
+    accent_color: "#FF2ECC",
+    button_color: "#FF2ECC",
     image_url: FALLBACK_IMAGE,
-    label: "New Arrival",
-      title: "Discover Swiss Timepieces",
-    desc: "Curated collection of the world's finest horology. Certified pre-owned and vintage icons.",
-    discount: "-12%",
-    cta: "Browse",
+    discount_text: "-10%",
   },
   {
-    image_url: FALLBACK_IMAGE,
-    label: "Flagship",
-    title: "Haute Horlogerie Selection",
-    desc: "Audemars Piguet, Patek Philippe, and Vacheron Constantin — sourced with provenance.",
-    discount: "-15%",
-    cta: "Browse",
+    id: "2",
+    badge_label: "ERGONOMIC DESIGN",
+    title: "Level Up Your Comfort Zone",
+    subtitle:
+      "Experience the ultimate in gaming comfort with our new futuristic ergonomic chairs.",
+    accent_color: "#00E5FF",
+    button_color: "#00E5FF",
+    image_url: "https://i.ibb.co/jvXXcBMF/1773329250588-c2937090.jpg",
+    discount_text: "-15%",
   },
   {
-    image_url: FALLBACK_IMAGE,
-    label: "Limited",
-    title: "Iconic Maisons De Luxe",
-    desc: "Hermès, Dior, Louis Vuitton — access to pieces that never reach the open market.",
-    discount: "-20%",
-    cta: "Browse",
+    id: "3",
+    badge_label: "NEW ARRIVAL",
+    title: "Discover Swiss Timepieces",
+    subtitle:
+      "Curated collection of the world's finest horology. Certified pre-owned and vintage icons.",
+    accent_color: "#CCFF00",
+    button_color: "#CCFF00",
+    image_url: "https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg",
+    discount_text: "-12%",
   },
 ];
 
 export default function HeroSection() {
-  const [slides, setSlides] = useState<Slide[]>(defaultSlides);
+  const [slides, setSlides] = useState<HeroSlide[]>(defaultSlides);
   const [current, setCurrent] = useState(0);
+  const slide = slides[current];
+  const accent = slide?.accent_color || "#CCFF00";
+  const btnColor = slide?.button_color || accent;
 
   useEffect(() => {
-    async function fetchProducts() {
+    async function fetchSlides() {
       if (!supabase) return;
       const { data, error } = await supabase
-        .from("products")
-        .select("name, image_url, price")
-        .not("image_url", "is", null)
-        .limit(3);
+        .from("hero_slides")
+        .select("*")
+        .order("sort_order", { ascending: true });
 
       if (error) {
-        console.log("[HeroSection] Supabase fetch error:", error.message);
+        console.log("[HeroSection] fetch error:", error.message);
         return;
       }
 
       if (data && data.length > 0) {
-        const heroSlides: Slide[] = data.map((p, i) => ({
-          image_url: p.image_url || FALLBACK_IMAGE,
-          label: i === 0 ? "New Arrival" : i === 1 ? "Flagship" : "Limited",
-          title: p.name,
-          desc: `Curated ${p.name} — authenticated and ready for immediate delivery.`,
-          discount: i === 0 ? "-12%" : i === 1 ? "-15%" : "-20%",
-          cta: "Browse",
-        }));
-        setSlides(heroSlides);
-        console.log("[HeroSection] Fetched slide data:", heroSlides);
+        setSlides(data);
       }
     }
-    fetchProducts();
+    fetchSlides();
   }, []);
 
-  console.log("[HeroSection] Current slide:", slides[current]);
-
-  const goTo = useCallback(
-    (i: number) => {
-      setCurrent(i);
-    },
-    [],
+  const goTo = useCallback((i: number) => setCurrent(i), []);
+  const next = useCallback(
+    () => setCurrent((c) => (c + 1) % slides.length),
+    [slides.length],
   );
-
-  const next = useCallback(() => {
-    setCurrent((c) => (c + 1) % slides.length);
-  }, [slides.length]);
-
-  const prev = useCallback(() => {
-    setCurrent((c) => (c - 1 + slides.length) % slides.length);
-  }, [slides.length]);
+  const prev = useCallback(
+    () => setCurrent((c) => (c - 1 + slides.length) % slides.length),
+    [slides.length],
+  );
 
   useEffect(() => {
     const timer = setInterval(next, 6000);
@@ -104,11 +101,14 @@ export default function HeroSection() {
       {/* Ambient glow for glass backdrop */}
       <div className="hero-ambient" />
 
-      {/* ── Full-bleed hero card (starts below navbar) ── */}
-      <div className="relative w-full h-full elevation-4 glass-hero" style={{ borderRadius: 0, borderLeft: "none", borderRight: "none" }}>
+      {/* ── Full-bleed hero card ── */}
+      <div
+        className="relative w-full h-full elevation-4 glass-hero"
+        style={{ borderRadius: 0, borderLeft: "none", borderRight: "none" }}
+      >
         {/* z-0: full-bleed image */}
         <img
-          src={slides[current].image_url}
+          src={slide.image_url}
           alt=""
           className="absolute inset-0 w-full h-full object-cover"
           style={{ zIndex: 0 }}
@@ -119,7 +119,7 @@ export default function HeroSection() {
           }}
         />
 
-        {/* z-1: warm charcoal gradient overlay — darkens left edge for text legibility */}
+        {/* z-1: dark gradient overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -129,60 +129,73 @@ export default function HeroSection() {
           }}
         />
 
-        {/* z-2: text content — vertically centered, left-aligned */}
+        {/* z-2: text content */}
         <div
           className="absolute inset-0 flex items-center"
           style={{ zIndex: 2 }}
           key={current}
         >
           <div className="pl-8 md:pl-20 max-w-[600px]">
+            {/* Badge with dynamic accent color */}
             <span
               className="inline-flex items-center gap-2 font-medium tracking-[0.15em] mb-4 md:mb-6 uppercase text-[11px]"
-              style={{ color: "var(--color-brand-400)", animationDelay: "0ms" }}
+              style={{ color: accent, animationDelay: "0ms" }}
             >
-              <span className="pulse-dot" />
-              {slides[current].label}
+              <span
+                className="inline-block w-2 h-2 rounded-full animate-pulse"
+                style={{
+                  background: accent,
+                  boxShadow: `0 0 6px ${accent}99`,
+                }}
+              />
+              {slide.badge_label}
             </span>
 
             <h1
               className="text-[clamp(56px,7vw,96px)] font-bold text-[var(--color-text-primary)] leading-[1.0] mb-4 md:mb-6 tracking-tight line-clamp-2 animate-fade-in-up"
               style={{ animationDelay: "100ms" }}
             >
-              {slides[current].title}
+              {slide.title}
             </h1>
 
             <p
               className="text-[var(--color-text-secondary)] text-sm md:text-base mb-6 md:mb-10 max-w-md leading-relaxed animate-fade-in-up"
-              style={{ opacity: 0.6, fontWeight: 300, letterSpacing: "0.01em", animationDelay: "200ms" }}
+              style={{
+                opacity: 0.6,
+                fontWeight: 300,
+                letterSpacing: "0.01em",
+                animationDelay: "200ms",
+              }}
             >
-              {slides[current].desc}
+              {slide.subtitle}
             </p>
 
+            {/* CTA button — dynamic accent */}
             <button
-              className="btn-primary group/btn inline-flex items-center gap-2 font-bold py-3 px-8 md:py-4 md:px-10 rounded-full w-fit text-sm animate-fade-in-up btn-glow-brand"
+              className="group/btn inline-flex items-center gap-2 font-bold py-3 px-8 md:py-4 md:px-10 rounded-full w-fit text-sm animate-fade-in-up text-black"
               style={{
-                backgroundColor: "#CCFF00",
-                color: "#000000",
+                backgroundColor: btnColor,
                 animationDelay: "300ms",
+                boxShadow: `0 0 20px ${btnColor}4D`,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#d9ff00";
-                e.currentTarget.style.boxShadow = "0 0 24px rgba(204,255,0,0.4)";
+                e.currentTarget.style.backgroundColor = `${btnColor}CC`;
+                e.currentTarget.style.boxShadow = `0 0 28px ${btnColor}66`;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#CCFF00";
-                e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.backgroundColor = btnColor;
+                e.currentTarget.style.boxShadow = `0 0 20px ${btnColor}4D`;
               }}
             >
-              {slides[current].cta}
+              Shop Now
               <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" />
             </button>
           </div>
         </div>
 
-        {/* Discount badge */}
+        {/* Discount badge — coral/red per reference */}
         <div
-          className="font-bold text-sm -rotate-2 animate-float glass-badge"
+          className="font-bold text-sm -rotate-2 animate-float"
           style={{
             position: "absolute",
             top: "24px",
@@ -190,13 +203,19 @@ export default function HeroSection() {
             zIndex: 10,
             padding: "6px 14px",
             borderRadius: "100px",
+            background: "rgba(255, 70, 70, 0.18)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1px solid rgba(255, 70, 70, 0.25)",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+            color: "#FF6B6B",
           }}
         >
-          {slides[current].discount}
+          {slide.discount_text}
         </div>
       </div>
 
-      {/* Arrow buttons — positioned at edges of full-width card */}
+      {/* Arrow buttons */}
       <button
         onClick={prev}
         className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center z-30 glass-arrow"
@@ -212,14 +231,22 @@ export default function HeroSection() {
         <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
       </button>
 
-      {/* Progress dots */}
+      {/* Progress dots — active dot uses accent color */}
       <div className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 z-30">
-        {slides.map((_, i) => (
+        {slides.map((s, i) => (
           <button
-            key={i}
+            key={s.id}
             onClick={() => goTo(i)}
             className={i === current ? "glass-dot-active" : "glass-dot"}
             aria-label={`Go to slide ${i + 1}`}
+            style={
+              i === current
+                ? {
+                    background: accent,
+                    boxShadow: `0 0 12px ${accent}66`,
+                  }
+                : undefined
+            }
           />
         ))}
       </div>
