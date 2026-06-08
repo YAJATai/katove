@@ -1,7 +1,6 @@
 "use client";
 
 import HeroSection from "@/components/HeroSection";
-import BannerSection from "@/components/BannerSection";
 import { useEffect, useState, useRef } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight, ShoppingBag, Check } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
@@ -161,7 +160,6 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <BannerSection />
 
       {/* ═══ SECTION 2 — What's New ═══ */}
       <section className="py-16 bg-[var(--color-surface-default)]">
