@@ -60,11 +60,8 @@ export default function Footer() {
           <div className="lg:col-span-5 space-y-5">
             <Link
               href="/"
-              className="text-3xl font-bold tracking-tighter italic text-white flex items-center gap-2 hover:text-[var(--color-brand-400)] transition-colors duration-200"
+              className="text-3xl font-extrabold tracking-wider italic text-white hover:text-[var(--color-brand-400)] transition-colors duration-200 uppercase"
             >
-              <svg width="24" height="24" viewBox="0 0 80 80" fill="currentColor" className="text-[var(--color-brand-400)]">
-                <path d="M40 80C17.9086 80 0 62.0914 0 40V0C15.0436 0 28.1476 8.30466 34.9776 20.5796C25.6529 22.8063 18.7198 31.1937 18.7198 41.2004V42.0962C18.7198 53.3099 27.8104 62.4004 39.0242 62.4004H39.9199L39.9197 41.2004C39.9197 52.9088 49.4113 62.4004 61.1198 62.4004L61.1198 41.2004C61.1198 29.5187 51.6717 20.0437 40 20.0005L40 0H41.6902C62.8481 0 80 17.1519 80 38.3099V40C80 62.0914 62.0914 80 40 80Z" />
-              </svg>
               KATOVE
             </Link>
             <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed max-w-sm">
