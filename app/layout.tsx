@@ -12,7 +12,7 @@ import { Analytics } from "@vercel/analytics/react";
 export const metadata: Metadata = {
   title: "Katove — Private Luxury Marketplace",
   description: "Georgia's black market for the world's finest luxury goods. Cartier, Rolex, Audemars Piguet, Dior, Goyard, Louis Vuitton.",
-  icons: { icon: "/favicon.png" },
+  icons: { icon: "/favicon.svg" },
   openGraph: {
     title: "Katove — Private Luxury Marketplace",
     description: "Georgia's black market for the world's finest luxury goods.",
