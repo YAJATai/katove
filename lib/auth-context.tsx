@@ -16,6 +16,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
   signUp: (email: string, password: string, name: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
+  signInWithGoogle: () => Promise<{ error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -24,6 +25,7 @@ const AuthContext = createContext<AuthContextType>({
   signIn: async () => ({}),
   signUp: async () => ({}),
   signOut: async () => {},
+  signInWithGoogle: async () => ({}),
 });
 
 async function getSb(): Promise<SupabaseClient | null> {
@@ -131,6 +133,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (profileError) return { error: profileError.message };
           }
           return {};
+        },
+        signInWithGoogle: async () => {
+          const sb = await getSb();
+          if (!sb) return { error: "Supabase not configured" };
+          const { error } = await sb.auth.signInWithOAuth({
+            provider: "google",
+            options: { redirectTo: `${window.location.origin}/auth/callback` },
+          });
+          return error ? { error: error.message } : {};
         },
         signOut: async () => {
           const sb = await getSb();

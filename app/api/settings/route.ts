@@ -14,7 +14,7 @@ export async function GET() {
   if (!supabase) {
     return NextResponse.json({
       font_family: "Inter, sans-serif",
-      primary_color: "#e8e0d0",
+      primary_color: "#ccff00",
       site_name: "Katove",
     });
   }
@@ -28,7 +28,7 @@ export async function GET() {
   return NextResponse.json(
     data ?? {
       font_family: "Inter, sans-serif",
-      primary_color: "#e8e0d0",
+      primary_color: "#ccff00",
       site_name: "Katove",
     }
   );

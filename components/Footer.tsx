@@ -7,12 +7,12 @@ import { FormEvent, useState } from "react";
 
 function FeatureCard({ icon: Icon, title, desc }: { icon: typeof Zap; title: string; desc: string }) {
   return (
-    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-[var(--color-border-default)] hover:bg-white/[0.07] transition-all duration-200">
+    <div className="flex items-center gap-4 p-5 rounded-xl bg-white/5 border border-[var(--color-border-default)] hover:bg-white/[0.07] transition-all duration-200">
       <div className="w-12 h-12 rounded-full bg-[var(--color-brand-400)]/10 flex items-center justify-center text-[var(--color-brand-400)] shrink-0">
         <Icon className="w-6 h-6" />
       </div>
       <div>
-        <h4 className="text-[var(--color-text-primary)] font-bold text-sm">{title}</h4>
+        <h4 className="text-white font-bold text-sm">{title}</h4>
         <p className="text-[var(--color-text-tertiary)] text-xs mt-0.5">{desc}</p>
       </div>
     </div>
@@ -48,8 +48,16 @@ export default function Footer() {
   return (
     <footer className="w-full bg-[var(--color-surface-raised)] border-t border-[var(--color-border-weak)] pt-20 pb-10">
       <div className="max-w-[1400px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
-          <div className="lg:col-span-5 space-y-6">
+        {/* Feature cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
+          <FeatureCard icon={Zap} title="24/7 Instant Delivery" desc="Delivered to you anytime, anywhere" />
+          <FeatureCard icon={ShieldCheck} title="1 Year Warranty" desc="Comprehensive coverage included" />
+          <FeatureCard icon={Headphones} title="24/7 Support" desc="Expert assistance anytime" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-10 pt-10 border-t border-[var(--color-border-weak)]">
+          {/* Logo + tagline */}
+          <div className="lg:col-span-5 space-y-5">
             <Link
               href="/"
               className="text-3xl font-bold tracking-tighter italic text-white flex items-center gap-2 hover:text-[var(--color-brand-400)] transition-colors duration-200"
@@ -64,11 +72,12 @@ export default function Footer() {
             </p>
           </div>
 
+          {/* Subscribe */}
           <div className="lg:col-span-7">
-            <h3 className="text-[var(--color-text-primary)] font-bold mb-6 tracking-wide text-sm uppercase">
+            <h3 className="text-white font-bold mb-5 tracking-wide text-sm uppercase">
               STAY UPDATED
             </h3>
-            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-[var(--color-border-default)]">
+            <div className="bg-white/[0.03] backdrop-blur-sm p-6 rounded-2xl border border-[var(--color-border-default)]">
               <p className="text-[var(--color-text-secondary)] text-sm mb-4 leading-relaxed">
                 Subscribe for exclusive deals, new product drops, and updates.
               </p>
@@ -79,16 +88,16 @@ export default function Footer() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[var(--color-surface-default)] border border-[var(--color-border-strong)] rounded-xl px-4 py-3.5 text-[var(--color-text-primary)] text-sm transition-all placeholder:text-[var(--color-text-tertiary)] pr-12"
+                    className="w-full bg-[var(--color-surface-default)] border border-[var(--color-border-strong)] rounded-xl px-4 py-3.5 text-[var(--color-text-primary)] text-sm transition-all placeholder:text-[var(--color-text-tertiary)] pr-12 focus:border-[var(--color-brand-400)] focus:ring-1 focus:ring-[var(--color-brand-400)]/20 outline-none"
                     disabled={subscribed}
                   />
                   <button
                     type="submit"
                     disabled={subscribing || subscribed}
-                    className="btn-primary absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[var(--color-brand-400)] rounded-lg text-[var(--color-text-on-primary)] hover:bg-white transition-colors duration-200 disabled:opacity-50"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[var(--color-brand-400)] rounded-lg text-black hover:bg-white transition-colors duration-200 disabled:opacity-50"
                   >
                     {subscribed ? (
-                      <CheckCircle className="w-4 h-4 animate-success-pop" />
+                      <CheckCircle className="w-4 h-4" />
                     ) : (
                       <ArrowRight className="w-4 h-4" />
                     )}
@@ -108,12 +117,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-10 border-t border-[var(--color-border-weak)] mb-10">
-          <FeatureCard icon={Zap} title="24/7 Instant Delivery" desc="Delivered to you anytime, anywhere" />
-          <FeatureCard icon={ShieldCheck} title="1 Year Warranty" desc="Comprehensive coverage included" />
-          <FeatureCard icon={Headphones} title="24/7 Support" desc="Expert assistance anytime" />
-        </div>
-
+        {/* Bottom bar */}
         <div className="pt-8 border-t border-[var(--color-border-weak)] flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[var(--color-text-tertiary)] text-xs">
             &copy; 2026 Katove. All rights reserved.

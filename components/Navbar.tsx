@@ -6,6 +6,7 @@ import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
 import { useState, useEffect } from "react";
 import CartDrawer from "./CartDrawer";
+import AuthModal from "./AuthModal";
 
 const navLinks = [
   { href: "/", label: "Store" },
@@ -24,6 +25,14 @@ export default function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [authOpen, setAuthOpen] = useState(false);
+
+  useEffect(() => {
+    if (window.location.search.includes("auth=signin")) {
+      setAuthOpen(true);
+      window.history.replaceState({}, "", "/");
+    }
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -81,12 +90,12 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-3 md:gap-4">
-            <Link
-              href={user ? "/account" : "/login"}
+            <button
+              onClick={() => user ? window.location.href = "/account" : setAuthOpen(true)}
               className="hidden md:flex items-center justify-center w-9 h-9 rounded-full transition-all duration-150 text-[var(--color-text-tertiary)] hover:text-[var(--color-brand-400)] hover:bg-[var(--color-interactive-hover)] active:scale-[0.95]"
             >
               <User className="w-5 h-5" />
-            </Link>
+            </button>
 
             <button
               onClick={() => setCartOpen(true)}
@@ -153,17 +162,19 @@ export default function Navbar() {
               </Link>
             ))}
             <div className="border-t border-[var(--color-border-default)] pt-2 mt-2">
-              <Link
-                href={user ? "/account" : "/login"}
-                onClick={() => setMobileOpen(false)}
-                className="block px-4 py-3 text-sm font-medium text-[var(--color-text-secondary)] hover:text-white hover:bg-[var(--color-interactive-hover)] rounded-xl transition-all duration-150 active:scale-[0.98]"
+              <button
+                onClick={() => { user ? window.location.href = "/account" : setAuthOpen(true); setMobileOpen(false); }}
+                className="w-full text-left px-4 py-3 text-sm font-medium text-[var(--color-text-secondary)] hover:text-white hover:bg-[var(--color-interactive-hover)] rounded-xl transition-all duration-150 active:scale-[0.98]"
               >
                 My Account
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Auth modal */}
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
 
       {/* Cart drawer */}
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />

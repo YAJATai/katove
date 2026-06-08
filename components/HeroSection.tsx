@@ -159,19 +159,19 @@ export default function HeroSection() {
             </p>
 
             <button
-              className="btn-primary group/btn inline-flex items-center gap-2 font-bold py-3 px-8 md:py-4 md:px-10 rounded-full w-fit text-sm animate-fade-in-up"
+              className="btn-primary group/btn inline-flex items-center gap-2 font-bold py-3 px-8 md:py-4 md:px-10 rounded-full w-fit text-sm animate-fade-in-up btn-glow-brand"
               style={{
-                backgroundColor: "#E8E0D0",
-                color: "#0d0b09",
+                backgroundColor: "#CCFF00",
+                color: "#000000",
                 animationDelay: "300ms",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#ffffff";
-                e.currentTarget.style.boxShadow = "0 0 24px rgba(232,224,208,0.2)";
+                e.currentTarget.style.backgroundColor = "#d9ff00";
+                e.currentTarget.style.boxShadow = "0 0 24px rgba(204,255,0,0.4)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#E8E0D0";
-                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.backgroundColor = "#CCFF00";
+                e.currentTarget.style.boxShadow = "";
               }}
             >
               {slides[current].cta}
@@ -182,18 +182,13 @@ export default function HeroSection() {
 
         {/* Discount badge */}
         <div
-          className="font-bold text-sm -rotate-2 animate-float"
+          className="font-bold text-sm -rotate-2 animate-float glass-badge"
           style={{
             position: "absolute",
             top: "24px",
             right: "24px",
             zIndex: 10,
-            color: "#E8E0D0",
             padding: "6px 14px",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-            background: "rgba(232,224,208,0.12)",
-            border: "1px solid rgba(232,224,208,0.2)",
             borderRadius: "100px",
           }}
         >
@@ -207,14 +202,14 @@ export default function HeroSection() {
         className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center z-30 glass-arrow"
         aria-label="Previous slide"
       >
-        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 rotate-180 text-[#E8E0D0]" />
+        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 rotate-180 text-white" />
       </button>
       <button
         onClick={next}
         className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center z-30 glass-arrow"
         aria-label="Next slide"
       >
-        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-[#E8E0D0]" />
+        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-white" />
       </button>
 
       {/* Progress dots */}

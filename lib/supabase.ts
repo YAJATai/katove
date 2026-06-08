@@ -24,6 +24,6 @@ export async function fetchSettings() {
     const res = await fetch(getApiUrl("/api/settings"));
     return res.json();
   } catch {
-    return { font_family: null, primary_color: "#e8e0d0" };
+    return { font_family: null, primary_color: "#ccff00" };
   }
 }

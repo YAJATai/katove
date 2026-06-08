@@ -16,7 +16,7 @@ export default function BannerSection() {
         <div className="relative z-10 text-center max-w-4xl px-4 sm:px-6 py-8 sm:py-10 stagger-children">
           <div
             className="inline-flex items-center gap-2 rounded-full px-3 sm:px-4 py-1 sm:py-1.5 mb-5 sm:mb-8 backdrop-blur-sm border"
-            style={{ backgroundColor: "rgba(232, 224, 208, 0.08)", borderColor: "rgba(232, 224, 208, 0.15)" }}
+            style={{ backgroundColor: "rgba(204, 255, 0, 0.08)", borderColor: "rgba(204, 255, 0, 0.15)" }}
           >
             <div className="w-2 h-2 rounded-full bg-[var(--color-brand-400)] animate-pulse" />
             <span className="text-[var(--color-brand-400)] text-[10px] sm:text-xs font-bold uppercase tracking-wider">
