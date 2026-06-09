@@ -240,6 +240,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ═══ SECTION 2.5 — Promo Banner ═══ */}
+      <section className="py-8 bg-[var(--color-surface-default)]">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="relative rounded-[40px] overflow-hidden bg-black aspect-[4/3] md:aspect-[21/9] flex items-center justify-center text-center px-4 border border-[var(--color-border-default)]">
+            <img 
+              src="/katove_banner.png" 
+              alt="Exclusive Technology Banner" 
+              className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/80 pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col items-center max-w-4xl mx-auto space-y-5 md:space-y-6 px-4">
+              <span className="text-[var(--color-text-tertiary)] text-xs md:text-sm font-medium tracking-widest uppercase">
+                Scale without limits.
+              </span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[var(--color-brand-400)]/30 bg-[var(--color-brand-400)]/10 backdrop-blur-md">
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-brand-400)] shadow-[0_0_8px_var(--color-brand-400)]" />
+                <span className="text-[var(--color-brand-400)] text-[10px] md:text-xs font-bold uppercase tracking-widest">
+                  Exclusive Technology
+                </span>
+              </div>
+              <h2 className="text-4xl md:text-6xl lg:text-[72px] font-black text-white leading-[1.05] tracking-tight">
+                Engineered For The Modern Gaming World With Unmatched Power
+              </h2>
+              <Link href="/products" className="mt-8 px-8 py-4 rounded-full bg-[var(--color-brand-400)] text-black font-bold text-sm md:text-base hover:scale-105 hover:shadow-[0_0_30px_var(--color-brand-400)] transition-all duration-300 active:scale-95">
+                Explore Now
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══ SECTION 3 — Top 10 ═══ */}
       <section className="py-16 bg-[var(--color-surface-raised)]">
         <div className="max-w-[1400px] mx-auto px-6">
