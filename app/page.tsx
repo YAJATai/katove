@@ -390,74 +390,86 @@ export default function HomePage() {
                 Only the best made the list — products that deliver real value.
               </p>
             </div>
-            <div className="hidden md:flex items-center gap-2">
-              <button onClick={() => scrollLeft(topScrollRef)} className="w-10 h-10 rounded-full bg-[var(--color-surface-default)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]">
-                <ChevronLeft className="w-4 h-4" />
+            <div className="hidden md:flex items-center gap-3">
+              <button
+                onClick={() => scrollLeft(topScrollRef)}
+                className="w-12 h-12 rounded-full bg-[#111] border border-white/10 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black hover:border-[var(--color-brand-400)] transition-all duration-150 active:scale-[0.97]"
+                aria-label="Scroll left"
+              >
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <button onClick={() => scrollRight(topScrollRef)} className="w-10 h-10 rounded-full bg-[var(--color-surface-default)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]">
-                <ChevronRight className="w-4 h-4" />
+              <button
+                onClick={() => scrollRight(topScrollRef)}
+                className="w-12 h-12 rounded-full bg-[#111] border border-white/10 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black hover:border-[var(--color-brand-400)] transition-all duration-150 active:scale-[0.97]"
+                aria-label="Scroll right"
+              >
+                <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
 
           <div className="relative">
-            <div ref={topScrollRef} className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide scroll-smooth">
+            <div ref={topScrollRef} className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide scroll-smooth">
               {loadingTop ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="min-w-[260px] rounded-xl bg-[var(--color-surface-overlay)] border border-[var(--color-border-default)] overflow-hidden flex-shrink-0 skeleton" style={{ height: 340 }} />
+                  <div key={i} className="w-[78vw] max-w-[290px] sm:w-72 rounded-3xl bg-[var(--color-surface-overlay)] border border-white/5 overflow-hidden flex-shrink-0 skeleton" style={{ height: 380 }} />
                 ))
               ) : (
                 topProducts.slice(0, 10).map((product, idx) => (
-                  <div
+                  <Link
                     key={product.id}
-                    className="group min-w-[260px] rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-default)] overflow-hidden flex-shrink-0 flex flex-col card-hover hover:border-[var(--color-border-accent)]"
+                    href={`/collections?product=${product.slug}`}
+                    className="group relative bg-[#111] rounded-3xl overflow-hidden border border-white/5 hover:border-[var(--color-brand-400)]/50 transition-all duration-300 cursor-pointer flex-shrink-0 w-[78vw] max-w-[290px] sm:w-72 block hover:shadow-[0_0_30px_rgba(204,255,0,0.03)]"
                   >
-                    {/* Rank badge */}
-                    <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                      <span className="text-[var(--color-brand-400)] text-[10px] font-bold bg-[var(--color-brand-400)]/10 rounded-full px-2.5 py-0.5">
+                    {/* Image Area */}
+                    <div className="h-[220px] sm:h-[260px] relative p-4 sm:p-6 flex items-center justify-center bg-[#0d0d0d]">
+                      <div className="absolute top-3 left-3 bg-[var(--color-brand-400)]/10 text-[var(--color-brand-400)] text-[10px] font-black px-3 py-1 rounded-full border border-[var(--color-brand-400)]/20">
                         #{idx + 1}
-                      </span>
-                    </div>
-
-                    <Link href={`/collections?product=${product.slug}`} className="block aspect-square bg-[var(--color-surface-overlay)] flex items-center justify-center p-6 mx-4 rounded-lg">
+                      </div>
                       <img
                         src={product.image_url || FALLBACK_IMG}
                         alt={product.name}
-                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                        className="object-contain w-[82%] h-[82%] group-hover:scale-110 transition-transform duration-500"
                         onError={(e) => { if (e.currentTarget.src !== FALLBACK_IMG) e.currentTarget.src = FALLBACK_IMG; }}
                       />
-                    </Link>
+                    </div>
 
-                    <div className="p-4 flex flex-col flex-1">
-                      <p className="text-[var(--color-text-tertiary)] text-[10px] uppercase tracking-wider font-medium">
+                    {/* Info Area */}
+                    <div className="p-5">
+                      <div className="text-xs text-gray-500 mb-1 font-medium">
                         {product.categories?.name || "Exclusive Product"}
-                      </p>
-                      <Link href={`/collections?product=${product.slug}`}>
-                        <h3 className="text-white font-bold text-sm leading-tight mt-0.5 group-hover:text-[var(--color-brand-400)] transition-colors duration-200">
-                          {product.name}
-                        </h3>
-                      </Link>
-                      <div className="flex items-center justify-between mt-auto pt-3">
-                        <span className="text-[var(--color-brand-400)] font-bold text-sm">
+                      </div>
+                      <h3 className="text-base font-bold text-white mb-3 line-clamp-1 group-hover:text-[var(--color-brand-400)] transition-colors duration-200">
+                        {product.name}
+                      </h3>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[var(--color-brand-400)] font-bold font-mono">
                           ₾{product.price.toFixed(2)}
                         </span>
                         <button
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAdd(product); }}
-                          className={`pointer-events-auto text-xs font-bold uppercase tracking-wider rounded-lg px-3 py-1.5 transition-all duration-200 active:scale-[0.97] ${
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleAdd(product);
+                          }}
+                          className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors pointer-events-auto ${
                             addedIds.has(product.id)
                               ? "bg-[var(--color-brand-400)] text-black"
-                              : "bg-white text-black hover:bg-[var(--color-brand-400)]"
+                              : "bg-white/5 text-white hover:bg-[var(--color-brand-400)] hover:text-black"
                           }`}
                         >
                           {addedIds.has(product.id) ? (
-                            <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Added</span>
+                            <Check className="w-4 h-4" />
                           ) : (
-                            "ADD +"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus w-4 h-4" aria-hidden="true">
+                              <path d="M5 12h14"></path>
+                              <path d="M12 5v14"></path>
+                            </svg>
                           )}
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))
               )}
             </div>
