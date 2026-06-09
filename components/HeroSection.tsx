@@ -3,6 +3,7 @@
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 interface HeroSlide {
   id: string;
@@ -180,7 +181,8 @@ export default function HeroSection() {
               </p>
 
               {/* CTA button — dynamic accent */}
-              <button
+              <Link
+                href="/collections"
                 className="group/btn inline-flex items-center gap-2 font-bold py-3 px-8 md:py-3.5 md:px-9 rounded-full text-sm text-black transition-all duration-300 active:scale-95"
                 style={{
                   backgroundColor: btnColor,
@@ -197,7 +199,7 @@ export default function HeroSection() {
               >
                 Shop Now
                 <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" />
-              </button>
+              </Link>
             </div>
           </div>
 

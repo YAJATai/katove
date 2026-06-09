@@ -126,10 +126,10 @@ export default function Footer() {
             >
               Partner Program
             </Link>
-            <Link href="#" className="text-xs text-[var(--color-text-tertiary)] hover:text-white transition-colors duration-200">
+            <Link href="/" className="text-xs text-[var(--color-text-tertiary)] hover:text-white transition-colors duration-200">
               Terms
             </Link>
-            <Link href="#" className="text-xs text-[var(--color-text-tertiary)] hover:text-white transition-colors duration-200">
+            <Link href="/" className="text-xs text-[var(--color-text-tertiary)] hover:text-white transition-colors duration-200">
               Privacy
             </Link>
           </div>
