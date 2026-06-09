@@ -1,24 +1,20 @@
 -- ============================================================
 -- Katove — Complete Database Setup
--- Run ALL of this in Supabase SQL Editor (one paste, one run)
+-- Drop + recreate cleanly. Run once in Supabase SQL Editor.
 -- ============================================================
 
--- Disable triggers temporarily during dropping
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-
--- Clean up existing tables to avoid schema mismatches
 DROP TABLE IF EXISTS public.hero_slides CASCADE;
 DROP TABLE IF EXISTS public.settings CASCADE;
 DROP TABLE IF EXISTS public.subscriptions CASCADE;
 DROP TABLE IF EXISTS public.contact_messages CASCADE;
 DROP TABLE IF EXISTS public.orders CASCADE;
 DROP TABLE IF EXISTS public.addresses CASCADE;
-DROP TABLE IF EXISTS public.profiles CASCADE;
 DROP TABLE IF EXISTS public.products CASCADE;
 DROP TABLE IF EXISTS public.categories CASCADE;
+DROP TABLE IF EXISTS public.profiles CASCADE;
 
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS public.handle_new_user;
 
 -- ═══ 1. CATEGORIES ═══
 CREATE TABLE public.categories (
@@ -58,18 +54,28 @@ ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "products_public_read" ON public.products FOR SELECT USING (true);
 
 INSERT INTO public.products (name, slug, description, price, image_url, category_id, is_top_pick) VALUES
-  ('Rolex Daytona 116500LN', 'rolex-daytona', 'Ceramic bezel, white dial. The definitive chronograph.', 32500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), true),
-  ('Rolex Submariner Date', 'rolex-submariner', 'Ceramic bezel, black dial. The diver''s benchmark.', 18500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), true),
-  ('AP Royal Oak 15500ST', 'ap-royal-oak', 'Blue dial, steel bracelet. Iconic octagonal bezel.', 42500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'audemars-piguet'), true),
-  ('Cartier Love Bracelet SM', 'cartier-love-sm', '18K yellow gold. The eternal symbol of love.', 7500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), true),
+  -- Non-top picks (Luxury Products)
+  ('Rolex Daytona 116500LN', 'rolex-daytona', 'Ceramic bezel, white dial. The definitive chronograph.', 32500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), false),
+  ('Rolex Submariner Date', 'rolex-submariner', 'Ceramic bezel, black dial. The diver''s benchmark.', 18500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), false),
+  ('AP Royal Oak 15500ST', 'ap-royal-oak', 'Blue dial, steel bracelet. Iconic octagonal bezel.', 42500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'audemars-piguet'), false),
+  ('Cartier Love Bracelet SM', 'cartier-love-sm', '18K yellow gold. The eternal symbol of love.', 7500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), false),
   ('Cartier Panthere', 'cartier-panthere', 'Medium model, steel & gold. The feline icon.', 12400, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), false),
-  ('Louis Vuitton Neverfull MM', 'lv-neverfull-mm', 'Damier Azur canvas. The iconic tote.', 2150, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), true),
-  ('Louis Vuitton Wallet', 'lv-wallet-1', 'Louis Vuitton luxury wallet', 130, 'https://i.ibb.co/Mk376wqV/1773329923211-2f148b38.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), false),
-  ('Louis Vuitton Bag', 'lv-bag', 'Louis Vuitton luxury bag', 300, 'https://i.ibb.co/8L6zccv0/1773330962788-20fb4c93.webp', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), false),
-  ('Dior Saddle Bag', 'dior-saddle', 'Blue Oblique canvas. A true collector''s piece.', 4200, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'dior'), true),
+  ('Louis Vuitton Neverfull MM', 'lv-neverfull-mm', 'Damier Azur canvas. The iconic tote.', 2150, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), false),
+  ('Dior Saddle Bag', 'dior-saddle', 'Blue Oblique canvas. A true collector''s piece.', 4200, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'dior'), false),
   ('Goyard Belvedere PM', 'goyard-belvedere', 'Chevron canvas. Understated Parisian elegance.', 3200, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
-  ('Goyard', 'goyard-1', 'Goyard exclusive accessory', 40, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
-  ('Goyard', 'goyard-2', 'Goyard exclusive accessory', 50, 'https://i.ibb.co/YBnqxRbH/1773330768070-ac7832d7.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false);
+  
+  -- Top 10 Products Of The Month
+  ('louis vuitton Bag', 'lv-bag', 'Louis Vuitton luxury bag', 300, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330962788-20fb4c93.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), true),
+  ('louis vuitton Wallet', 'lv-wallet-1', 'Louis Vuitton luxury wallet', 130, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), true),
+  ('Goyard', 'goyard-1', 'Goyard exclusive card holder', 40, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
+  ('Goyard', 'goyard-2', 'Goyard exclusive card holder', 50, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330768070-ac7832d7.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
+  ('Goyard Wallet', 'goyard-wallet-1', 'Classic Goyard compact wallet', 90, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330697740-7a217cc9.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
+  ('Goyard Wallet', 'goyard-wallet-2', 'Classic Goyard bi-fold wallet', 130, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330653497-8e02497e.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
+  ('Goyard Wallet', 'goyard-wallet-3', 'Classic Goyard zip wallet', 120, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330623390-6091333f.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
+  ('Goyard Wallet', 'goyard-wallet-4', 'Classic Goyard long wallet', 140, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330601858-f8d18d1d.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
+  ('Goyard Wallet', 'goyard-wallet-5', 'Classic Goyard travel organizer', 140, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330579707-428fd7e5.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
+  ('Goyard', 'goyard-3', 'Goyard luxury pouch', 170, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330346720-3fe315ed.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true)
+ON CONFLICT (slug) DO NOTHING;
 
 -- ═══ 3. PROFILES ═══
 CREATE TABLE public.profiles (
@@ -88,14 +94,13 @@ CREATE POLICY "profiles_select_own" ON public.profiles FOR SELECT USING (auth.ui
 CREATE POLICY "profiles_update_own" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 CREATE POLICY "profiles_insert_own" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
--- Auto-create profile on signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.profiles (id, name, email, role)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', 'User'),
+    COALESCE(NEW.raw_user_meta_data->>'full_name', 'User'),
     COALESCE(NEW.email, ''),
     'customer'
   )
@@ -125,7 +130,7 @@ CREATE TABLE public.addresses (
 
 ALTER TABLE public.addresses ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "addresses_select_own" ON public.addresses FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "addresses_insert_own" ON public.addresses FOR INSERT WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
+CREATE POLICY "addresses_insert_own" ON public.addresses FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "addresses_update_own" ON public.addresses FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "addresses_delete_own" ON public.addresses FOR DELETE USING (auth.uid() = user_id);
 
@@ -154,7 +159,6 @@ CREATE TABLE public.contact_messages (
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
-  order_id TEXT,
   message TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -195,7 +199,7 @@ INSERT INTO public.hero_slides (badge_label, title, subtitle, accent_color, butt
   ('ERGONOMIC DESIGN', 'Level Up Your Comfort Zone', 'Experience the ultimate in gaming comfort with our new futuristic ergonomic chairs.', '#00E5FF', '#00E5FF', 'https://i.ibb.co/jvXXcBMF/1773329250588-c2937090.jpg', '-15%', 2),
   ('NEW ARRIVAL', 'Discover Swiss Timepieces', 'Curated collection of the world''s finest horology. Certified pre-owned and vintage icons.', '#CCFF00', '#CCFF00', 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', '-12%', 3);
 
--- ═══ 8.5. SETTINGS ═══
+-- ═══ 9. SETTINGS ═══
 CREATE TABLE public.settings (
   id BIGINT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
   font_family TEXT DEFAULT 'Inter, sans-serif',
@@ -209,10 +213,9 @@ ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "settings_public_read" ON public.settings FOR SELECT USING (true);
 
 INSERT INTO public.settings (id, font_family, primary_color, site_name, site_description)
-VALUES (1, 'Inter, sans-serif', '#ccff00', 'Katove', 'Ecommerce Store')
-ON CONFLICT (id) DO NOTHING;
+VALUES (1, 'Inter, sans-serif', '#ccff00', 'Katove', 'Ecommerce Store');
 
--- ═══ 9. INDEXES ═══
+-- ═══ 10. INDEXES ═══
 CREATE INDEX IF NOT EXISTS idx_addresses_user_id ON public.addresses(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_address_id ON public.orders(address_id);
