@@ -3,8 +3,25 @@
 -- Run ALL of this in Supabase SQL Editor (one paste, one run)
 -- ============================================================
 
+-- Disable triggers temporarily during dropping
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+-- Clean up existing tables to avoid schema mismatches
+DROP TABLE IF EXISTS public.hero_slides CASCADE;
+DROP TABLE IF EXISTS public.settings CASCADE;
+DROP TABLE IF EXISTS public.subscriptions CASCADE;
+DROP TABLE IF EXISTS public.contact_messages CASCADE;
+DROP TABLE IF EXISTS public.orders CASCADE;
+DROP TABLE IF EXISTS public.addresses CASCADE;
+DROP TABLE IF EXISTS public.profiles CASCADE;
+DROP TABLE IF EXISTS public.products CASCADE;
+DROP TABLE IF EXISTS public.categories CASCADE;
+
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- ═══ 1. CATEGORIES ═══
-CREATE TABLE IF NOT EXISTS public.categories (
+CREATE TABLE public.categories (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
@@ -22,11 +39,10 @@ INSERT INTO public.categories (name, slug, description) VALUES
   ('Louis Vuitton', 'louis-vuitton', 'Maison française'),
   ('Dior', 'dior', 'Couture & accessories'),
   ('Goyard', 'goyard', 'Trunk-maker since 1792'),
-  ('Frames', 'frames', 'Luxury eyewear')
-ON CONFLICT (slug) DO NOTHING;
+  ('Frames', 'frames', 'Luxury eyewear');
 
 -- ═══ 2. PRODUCTS ═══
-CREATE TABLE IF NOT EXISTS public.products (
+CREATE TABLE public.products (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
@@ -53,11 +69,10 @@ INSERT INTO public.products (name, slug, description, price, image_url, category
   ('Dior Saddle Bag', 'dior-saddle', 'Blue Oblique canvas. A true collector''s piece.', 4200, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'dior'), true),
   ('Goyard Belvedere PM', 'goyard-belvedere', 'Chevron canvas. Understated Parisian elegance.', 3200, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
   ('Goyard', 'goyard-1', 'Goyard exclusive accessory', 40, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
-  ('Goyard', 'goyard-2', 'Goyard exclusive accessory', 50, 'https://i.ibb.co/YBnqxRbH/1773330768070-ac7832d7.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false)
-ON CONFLICT (slug) DO NOTHING;
+  ('Goyard', 'goyard-2', 'Goyard exclusive accessory', 50, 'https://i.ibb.co/YBnqxRbH/1773330768070-ac7832d7.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false);
 
 -- ═══ 3. PROFILES ═══
-CREATE TABLE IF NOT EXISTS public.profiles (
+CREATE TABLE public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL DEFAULT '',
   email TEXT NOT NULL DEFAULT '',
@@ -80,7 +95,7 @@ BEGIN
   INSERT INTO public.profiles (id, name, email, role)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', 'User'),
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', 'User'),
     COALESCE(NEW.email, ''),
     'customer'
   )
@@ -89,13 +104,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- ═══ 4. ADDRESSES ═══
-CREATE TABLE IF NOT EXISTS public.addresses (
+CREATE TABLE public.addresses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
   full_name TEXT NOT NULL,
@@ -111,12 +125,12 @@ CREATE TABLE IF NOT EXISTS public.addresses (
 
 ALTER TABLE public.addresses ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "addresses_select_own" ON public.addresses FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY "addresses_insert_own" ON public.addresses FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "addresses_insert_own" ON public.addresses FOR INSERT WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 CREATE POLICY "addresses_update_own" ON public.addresses FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "addresses_delete_own" ON public.addresses FOR DELETE USING (auth.uid() = user_id);
 
 -- ═══ 5. ORDERS ═══
-CREATE TABLE IF NOT EXISTS public.orders (
+CREATE TABLE public.orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   address_id UUID REFERENCES public.addresses(id) ON DELETE SET NULL,
@@ -135,11 +149,12 @@ CREATE POLICY "orders_select_own" ON public.orders FOR SELECT USING (auth.uid() 
 CREATE POLICY "orders_insert_own" ON public.orders FOR INSERT WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
 
 -- ═══ 6. CONTACT MESSAGES ═══
-CREATE TABLE IF NOT EXISTS public.contact_messages (
+CREATE TABLE public.contact_messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   name TEXT NOT NULL,
   email TEXT NOT NULL,
+  order_id TEXT,
   message TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -149,7 +164,7 @@ CREATE POLICY "contact_messages_insert" ON public.contact_messages FOR INSERT WI
 CREATE POLICY "contact_messages_select_own" ON public.contact_messages FOR SELECT USING (auth.uid() IS NOT NULL);
 
 -- ═══ 7. SUBSCRIPTIONS ═══
-CREATE TABLE IF NOT EXISTS public.subscriptions (
+CREATE TABLE public.subscriptions (
   id BIGSERIAL PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -159,7 +174,7 @@ ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "subscriptions_insert" ON public.subscriptions FOR INSERT WITH CHECK (true);
 
 -- ═══ 8. HERO SLIDES ═══
-CREATE TABLE IF NOT EXISTS public.hero_slides (
+CREATE TABLE public.hero_slides (
   id BIGSERIAL PRIMARY KEY,
   badge_label TEXT NOT NULL DEFAULT '',
   title TEXT NOT NULL DEFAULT '',
@@ -179,6 +194,23 @@ INSERT INTO public.hero_slides (badge_label, title, subtitle, accent_color, butt
   ('IMMERSIVE AUDIO', 'Hear Every Footstep Clearly', 'Precision spatial audio that puts you right in the center of the action.', '#FF2ECC', '#FF2ECC', 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', '-10%', 1),
   ('ERGONOMIC DESIGN', 'Level Up Your Comfort Zone', 'Experience the ultimate in gaming comfort with our new futuristic ergonomic chairs.', '#00E5FF', '#00E5FF', 'https://i.ibb.co/jvXXcBMF/1773329250588-c2937090.jpg', '-15%', 2),
   ('NEW ARRIVAL', 'Discover Swiss Timepieces', 'Curated collection of the world''s finest horology. Certified pre-owned and vintage icons.', '#CCFF00', '#CCFF00', 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', '-12%', 3);
+
+-- ═══ 8.5. SETTINGS ═══
+CREATE TABLE public.settings (
+  id BIGINT PRIMARY KEY DEFAULT 1 CHECK (id = 1),
+  font_family TEXT DEFAULT 'Inter, sans-serif',
+  primary_color TEXT DEFAULT '#ccff00',
+  site_name TEXT DEFAULT 'Katove',
+  site_description TEXT DEFAULT 'Ecommerce Store',
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "settings_public_read" ON public.settings FOR SELECT USING (true);
+
+INSERT INTO public.settings (id, font_family, primary_color, site_name, site_description)
+VALUES (1, 'Inter, sans-serif', '#ccff00', 'Katove', 'Ecommerce Store')
+ON CONFLICT (id) DO NOTHING;
 
 -- ═══ 9. INDEXES ═══
 CREATE INDEX IF NOT EXISTS idx_addresses_user_id ON public.addresses(user_id);
