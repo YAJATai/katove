@@ -111,7 +111,7 @@ export default function HeroSection() {
         {/* Left slide preview */}
         <div 
           onClick={prev}
-          className="hidden sm:block w-[8%] lg:w-[10%] h-[55vh] md:h-[70vh] rounded-[32px] overflow-hidden relative opacity-25 cursor-pointer hover:opacity-40 transition-all duration-500 scale-95 border border-white/5 shrink-0"
+          className="hidden sm:block w-[8%] lg:w-[10%] h-[55vh] md:h-[70vh] rounded-[32px] overflow-hidden relative opacity-25 cursor-pointer hover:opacity-40 transition-all duration-500 scale-95 border border-white/5 shrink-0 group/left-slice"
         >
           <img 
             src={slides[prevIndex].image_url} 
@@ -127,6 +127,12 @@ export default function HeroSection() {
           {/* Discount badge */}
           <div className="absolute top-4 right-4 bg-red-600/30 border border-red-500/20 text-red-400 font-bold text-[9px] px-2 py-0.5 rounded-full scale-90">
             {slides[prevIndex].discount_text}
+          </div>
+          
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#1a1a1a] border border-white/10 flex items-center justify-center z-30 group-hover/left-slice:bg-[#00E5FF] transition-colors duration-300">
+              <ChevronLeft className="w-4 h-4 text-white group-hover/left-slice:text-black transition-colors" />
+            </div>
           </div>
         </div>
 
@@ -172,7 +178,7 @@ export default function HeroSection() {
                 {slide.badge_label}
               </span>
 
-              <h1 className="text-[clamp(36px,5vw,72px)] font-bold text-white leading-[1.05] mb-4 md:mb-6 tracking-tight">
+              <h1 className="text-[clamp(36px,5vw,72px)] font-bold text-white leading-[1.05] mb-4 md:mb-6 tracking-tight" style={{ fontFamily: "'Orbitron', sans-serif" }}>
                 {slide.title}
               </h1>
 
@@ -224,7 +230,7 @@ export default function HeroSection() {
         {/* Right slide preview */}
         <div 
           onClick={next}
-          className="hidden sm:block w-[8%] lg:w-[10%] h-[55vh] md:h-[70vh] rounded-[32px] overflow-hidden relative opacity-25 cursor-pointer hover:opacity-40 transition-all duration-500 scale-95 border border-white/5 shrink-0"
+          className="hidden sm:block w-[8%] lg:w-[10%] h-[55vh] md:h-[70vh] rounded-[32px] overflow-hidden relative opacity-25 cursor-pointer hover:opacity-40 transition-all duration-500 scale-95 border border-white/5 shrink-0 group/right-slice"
         >
           <img 
             src={slides[nextIndex].image_url} 
@@ -241,25 +247,17 @@ export default function HeroSection() {
           <div className="absolute top-4 right-4 bg-red-600/30 border border-red-500/20 text-red-400 font-bold text-[9px] px-2 py-0.5 rounded-full scale-90">
             {slides[nextIndex].discount_text}
           </div>
+          
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#1a1a1a] border border-white/10 flex items-center justify-center z-30 group-hover/right-slice:bg-[#00E5FF] transition-colors duration-300">
+              <ChevronRight className="w-4 h-4 text-white group-hover/right-slice:text-black transition-colors" />
+            </div>
+          </div>
         </div>
 
       </div>
 
-      {/* Navigation Arrows overlaying the preview card slices */}
-      <button
-        onClick={prev}
-        className="absolute left-6 md:left-[8%] lg:left-[11%] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-30 glass-arrow"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="w-4 h-4 text-white" />
-      </button>
-      <button
-        onClick={next}
-        className="absolute right-6 md:right-[8%] lg:right-[11%] top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center z-30 glass-arrow"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="w-4 h-4 text-white" />
-      </button>
+
 
       {/* Slide indicators at the bottom */}
       <div className="flex items-center justify-center gap-3 mt-6 z-30">
