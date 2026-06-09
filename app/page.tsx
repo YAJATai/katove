@@ -181,7 +181,7 @@ export default function HomePage() {
                 latestProducts.slice(0, 8).map((product) => (
                   <div
                     key={product.id}
-                    className="group min-w-[280px] md:min-w-[320px] rounded-xl overflow-hidden bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] flex-shrink-0 card-hover hover:border-[var(--color-border-accent)] flex flex-col"
+                    className="group relative min-w-[280px] md:min-w-[320px] rounded-xl overflow-hidden bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] flex-shrink-0 card-hover hover:border-[var(--color-border-accent)] flex flex-col"
                   >
                     {/* Image area */}
                     <Link href={`/collections?product=${product.slug}`} className="block aspect-[3/4] relative overflow-hidden bg-[var(--color-surface-overlay)]">
