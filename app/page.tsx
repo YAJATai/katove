@@ -18,62 +18,23 @@ const fallbackCategories: Category[] = [
 ];
 
 const fallbackLatestProducts: Product[] = [
-  {
-    id: "lv-bag",
-    name: "louis vuitton Bag",
-    slug: "lv-bag",
-    description: "Louis Vuitton luxury bag",
-    price: 300.00,
-    image_url: "https://i.ibb.co/8L6zccv0/1773330962788-20fb4c93.webp",
-    category_id: "cat-4",
-    categories: { name: "Louis Vuitton", slug: "louis-vuitton" },
-    is_top_pick: false,
-    created_at: ""
-  },
-  {
-    id: "lv-wallet-1",
-    name: "louis vuitton Wallet",
-    slug: "lv-wallet-1",
-    description: "Louis Vuitton luxury wallet",
-    price: 130.00,
-    image_url: "https://i.ibb.co/Mk376wqV/1773329923211-2f148b38.jpg",
-    category_id: "cat-4",
-    categories: { name: "Louis Vuitton", slug: "louis-vuitton" },
-    is_top_pick: false,
-    created_at: ""
-  },
-  {
-    id: "goyard-1",
-    name: "Goyard",
-    slug: "goyard-1",
-    description: "Goyard exclusive accessory",
-    price: 40.00,
-    image_url: "https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg",
-    category_id: "cat-6",
-    categories: { name: "Goyard", slug: "goyard" },
-    is_top_pick: false,
-    created_at: ""
-  },
-  {
-    id: "goyard-2",
-    name: "Goyard",
-    slug: "goyard-2",
-    description: "Goyard exclusive accessory",
-    price: 50.00,
-    image_url: "https://i.ibb.co/YBnqxRbH/1773330768070-ac7832d7.jpg",
-    category_id: "cat-6",
-    categories: { name: "Goyard", slug: "goyard" },
-    is_top_pick: false,
-    created_at: ""
-  }
+  { id: "p2", name: "louis vuitton Bag", slug: "lv-bag", description: "Louis Vuitton luxury bag", price: 300.00, image_url: "https://i.ibb.co/8L6zccv0/1773330962788-20fb4c93.webp", category_id: "cat-lv", categories: { name: "Louis Vuitton", slug: "louis-vuitton" }, is_top_pick: false, created_at: "" },
+  { id: "p1", name: "louis vuitton Wallet", slug: "lv-wallet-1", description: "Louis Vuitton luxury wallet", price: 130.00, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-lv", categories: { name: "Louis Vuitton", slug: "louis-vuitton" }, is_top_pick: false, created_at: "" },
+  { id: "p7", name: "Goyard", slug: "goyard-1", description: "Goyard exclusive card holder", price: 40.00, image_url: "https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg", category_id: "cat-goyard", categories: { name: "Goyard", slug: "goyard" }, is_top_pick: false, created_at: "" },
+  { id: "p8", name: "Goyard", slug: "goyard-2", description: "Goyard exclusive card holder", price: 50.00, image_url: "https://i.ibb.co/YBnqxRbH/1773330768070-ac7832d7.jpg", category_id: "cat-goyard", categories: { name: "Goyard", slug: "goyard" }, is_top_pick: false, created_at: "" },
 ];
 
 const fallbackProducts: Product[] = [
-  { id: "prod-1", name: "Rolex Daytona 116500LN", slug: "rolex-daytona", description: "Ceramic bezel, white dial. The definitive chronograph.", price: 32500, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-1", categories: { name: "Rolex", slug: "rolex" }, is_top_pick: true, created_at: "" },
-  { id: "prod-2", name: "AP Royal Oak 15500ST", slug: "ap-royal-oak", description: "Blue dial, steel bracelet. Iconic octagonal bezel.", price: 42500, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-2", categories: { name: "Audemars Piguet", slug: "audemars-piguet" }, is_top_pick: true, created_at: "" },
-  { id: "prod-3", name: "Cartier Love Bracelet SM", slug: "cartier-love-sm", description: "18K yellow gold. The eternal symbol of love.", price: 7500, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-3", categories: { name: "Cartier", slug: "cartier" }, is_top_pick: true, created_at: "" },
-  { id: "prod-4", name: "Louis Vuitton Neverfull MM", slug: "lv-neverfull-mm", description: "Damier Azur canvas. The iconic tote.", price: 2150, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-4", categories: { name: "Louis Vuitton", slug: "louis-vuitton" }, is_top_pick: true, created_at: "" },
-  { id: "prod-5", name: "Dior Saddle Bag", slug: "dior-saddle", description: "Blue Oblique canvas. A true collector's piece.", price: 4200, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-5", categories: { name: "Dior", slug: "dior" }, is_top_pick: true, created_at: "" },
+  { id: "p27", name: "Rolex Day-Date", slug: "rolex-day-date-1", description: "Rolex luxury watch", price: 435.00, image_url: "https://i.ibb.co/zTb29spM/1773329275501-88dfcefe.jpg", category_id: "cat-rolex", categories: { name: "Rolex", slug: "rolex" }, is_top_pick: false, created_at: "" },
+  { id: "p28", name: "Rolex Day-Date", slug: "rolex-day-date-2", description: "Rolex luxury watch", price: 444.00, image_url: "https://i.ibb.co/jvXXcBMF/1773329250588-c2937090.jpg", category_id: "cat-rolex", categories: { name: "Rolex", slug: "rolex" }, is_top_pick: false, created_at: "" },
+  { id: "p29", name: "Rolex Day-Date", slug: "rolex-day-date-3", description: "Rolex luxury watch", price: 555.00, image_url: "https://i.ibb.co/8gJTfmHH/1773329230916-b892a1be.jpg", category_id: "cat-rolex", categories: { name: "Rolex", slug: "rolex" }, is_top_pick: false, created_at: "" },
+  { id: "p30", name: "Rolex Day-Date", slug: "rolex-day-date-4", description: "Rolex luxury watch", price: 555.00, image_url: "https://i.ibb.co/S4GTpLK2/1773329210413-463e1809.jpg", category_id: "cat-rolex", categories: { name: "Rolex", slug: "rolex" }, is_top_pick: false, created_at: "" },
+  { id: "p31", name: "Rolex Day-Date", slug: "rolex-day-date-5", description: "Rolex luxury watch", price: 500.00, image_url: "https://i.ibb.co/9kh4t0V1/1773327720819-e0e3b05b.jpg", category_id: "cat-rolex", categories: { name: "Rolex", slug: "rolex" }, is_top_pick: false, created_at: "" },
+  { id: "p25", name: "Juste un Clou ring, small model", slug: "cartier-juste-un-clou-ring", description: "Cartier ring", price: 130.00, image_url: "https://i.ibb.co/qSp0DyW/1773327072893-6e439327.jpg", category_id: "cat-cartier", categories: { name: "Cartier", slug: "cartier" }, is_top_pick: false, created_at: "" },
+  { id: "p26", name: "Panthère de Cartier watch", slug: "cartier-panthere-watch", description: "Cartier watch", price: 230.00, image_url: "https://i.ibb.co/ycB3KTgQ/1773326935125-ba5be620.jpg", category_id: "cat-cartier", categories: { name: "Cartier", slug: "cartier" }, is_top_pick: false, created_at: "" },
+  { id: "p1", name: "louis vuitton Wallet", slug: "lv-wallet-1", description: "Louis Vuitton luxury wallet", price: 130.00, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-lv", categories: { name: "Louis Vuitton", slug: "louis-vuitton" }, is_top_pick: false, created_at: "" },
+  { id: "p32", name: "Dior", slug: "dior-1", description: "Dior accessory", price: 150.00, image_url: "https://i.ibb.co/XZb7ZR0H/1773329770381-4e79bf32.jpg", category_id: "cat-dior", categories: { name: "Dior", slug: "dior" }, is_top_pick: false, created_at: "" },
+  { id: "p2", name: "louis vuitton Bag", slug: "lv-bag", description: "Louis Vuitton luxury bag", price: 300.00, image_url: "https://i.ibb.co/8L6zccv0/1773330962788-20fb4c93.webp", category_id: "cat-lv", categories: { name: "Louis Vuitton", slug: "louis-vuitton" }, is_top_pick: false, created_at: "" },
 ];
 
 const FALLBACK_IMG = "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg";
@@ -109,30 +70,12 @@ export default function HomePage() {
         const { supabase } = await import("@/lib/supabase");
         const [{ data: cats }, { data: latest }, { data: top }] = await Promise.all([
           supabase.from("categories").select("*").order("name"),
-          supabase.from("products").select("*, categories!inner(name, slug)").order("created_at", { ascending: false }),
-          supabase.from("products").select("*, categories!inner(name, slug)").eq("is_top_pick", true).limit(10),
+          supabase.from("products").select("*, categories(name, slug)").order("created_at", { ascending: false }),
+          supabase.from("products").select("*, categories(name, slug)").limit(10),
         ]);
         if (cats && cats.length > 0) setCategories(cats);
-        if (latest && latest.length > 0) {
-          const mappedLatest = latest.map((p: any) => {
-            if (p.image_url === FALLBACK_IMG && p.name.toLowerCase().includes("louis vuitton")) {
-              return { ...p, image_url: "https://i.ibb.co/Mk376wqV/1773329923211-2f148b38.jpg" };
-            }
-            return p;
-          });
-          const orderedLatest: Product[] = [];
-          const bag = mappedLatest.find((p: any) => p.slug === "lv-bag");
-          const wallet = mappedLatest.find((p: any) => p.slug === "lv-wallet-1");
-          const goyard1 = mappedLatest.find((p: any) => p.slug === "goyard-1");
-          const goyard2 = mappedLatest.find((p: any) => p.slug === "goyard-2");
-          if (bag) orderedLatest.push(bag);
-          if (wallet) orderedLatest.push(wallet);
-          if (goyard1) orderedLatest.push(goyard1);
-          if (goyard2) orderedLatest.push(goyard2);
-          mappedLatest.forEach((p: any) => { if (!orderedLatest.some(ol => ol.id === p.id)) orderedLatest.push(p); });
-          setLatestProducts(orderedLatest);
-        }
-        if (top && top.length > 0) setTopProducts(top);
+        if (latest && latest.length > 0) setLatestProducts(latest as Product[]);
+        if (top && top.length > 0) setTopProducts(top as Product[]);
       } catch {}
       setLoadingLatest(false);
       setLoadingTop(false);
