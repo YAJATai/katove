@@ -84,6 +84,7 @@ export default function ProductsPage() {
                 key={product.id}
                 className="group relative rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-raised)] overflow-hidden flex flex-col card-hover hover:border-[var(--color-border-accent)]"
               >
+                <Link href={`/collections?product=${product.slug}`} className="absolute inset-0 z-10" />
                 {/* Shopping bag icon top-right */}
                 <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   <div className="w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
@@ -118,8 +119,8 @@ export default function ProductsPage() {
                       ₾{product.price.toFixed(2)}
                     </span>
                     <button
-                      onClick={() => handleAdd(product)}
-                      className={`flex items-center gap-1 text-xs font-bold uppercase tracking-wider rounded-lg px-3 py-1.5 transition-all duration-200 active:scale-[0.97] ${
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAdd(product); }}
+                      className={`relative z-20 pointer-events-auto flex items-center gap-1 text-xs font-bold uppercase tracking-wider rounded-lg px-3 py-1.5 transition-all duration-200 active:scale-[0.97] ${
                         addedIds.has(product.id)
                           ? "bg-[var(--color-brand-400)] text-black"
                           : "bg-white text-black hover:bg-[var(--color-brand-400)]"

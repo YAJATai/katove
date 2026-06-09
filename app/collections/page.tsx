@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { ShoppingBag, SlidersHorizontal, Grid3x3, List, Check } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import type { Product } from "@/lib/types";
@@ -101,8 +102,9 @@ function CollectionsContent() {
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className="card-hover rounded-2xl bg-[var(--color-surface-overlay)] border border-[var(--color-border-default)] overflow-hidden hover:border-[var(--color-border-accent)] hover:shadow-glow-primary group"
+                className="relative card-hover rounded-2xl bg-[var(--color-surface-overlay)] border border-[var(--color-border-default)] overflow-hidden hover:border-[var(--color-border-accent)] hover:shadow-glow-primary group flex flex-col"
               >
+                <Link href={`/collections?product=${product.slug}`} className="absolute inset-0 z-10"></Link>
                 <div className="aspect-square bg-gradient-to-br from-[var(--color-surface-elevated)] to-[var(--color-surface-overlay)] relative overflow-hidden">
                   {product.image_url ? (
                     <img
@@ -128,17 +130,17 @@ function CollectionsContent() {
                   <h3 className="text-[var(--color-text-primary)] font-bold text-sm leading-tight line-clamp-1 group-hover:text-[var(--color-brand-400)] transition-colors duration-200">
                     {product.name}
                   </h3>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mt-auto">
                     <span className="text-[var(--color-brand-400)] font-bold text-base">
                       ₾{product.price.toFixed(2)}
                     </span>
                   </div>
                   <button
-                    onClick={() => handleAdd(product)}
-                    className={`btn-primary w-full mt-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 border active:scale-[0.97] ${
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAdd(product); }}
+                    className={`relative z-20 pointer-events-auto btn-primary w-full mt-auto pt-2 pb-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 border active:scale-[0.97] ${
                       addedIds.has(product.id)
                         ? "bg-[var(--color-brand-400)] text-[var(--color-text-on-primary)] border-[var(--color-brand-400)]"
-                        : "border-[var(--color-border-strong)] text-[var(--color-text-primary)] hover:bg-[var(--color-brand-400)] hover:text-[var(--color-text-on-primary)] hover:border-[var(--color-brand-400)]"
+                        : "bg-transparent text-white border-white/20 hover:border-[var(--color-brand-400)] hover:text-[var(--color-brand-400)]"
                     }`}
                   >
                     {addedIds.has(product.id) ? (
