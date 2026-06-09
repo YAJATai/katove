@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ThemeInitializer from "@/components/ThemeInitializer";
 import ReferralTracker from "@/components/ReferralTracker";
+import ProductModal from "@/components/ProductModal";
 import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -33,6 +34,9 @@ export default function RootLayout({
             <ThemeInitializer />
             <Suspense fallback={null}>
               <ReferralTracker />
+            </Suspense>
+            <Suspense fallback={null}>
+              <ProductModal />
             </Suspense>
             <main className="min-h-screen bg-[var(--color-surface-default)] text-[var(--color-text-primary)] overflow-x-hidden">
               <Navbar />
