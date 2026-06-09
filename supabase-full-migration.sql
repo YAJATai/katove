@@ -54,27 +54,58 @@ ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "products_public_read" ON public.products FOR SELECT USING (true);
 
 INSERT INTO public.products (name, slug, description, price, image_url, category_id, is_top_pick) VALUES
-  -- Non-top picks (Luxury Products)
-  ('Rolex Daytona 116500LN', 'rolex-daytona', 'Ceramic bezel, white dial. The definitive chronograph.', 32500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), false),
-  ('Rolex Submariner Date', 'rolex-submariner', 'Ceramic bezel, black dial. The diver''s benchmark.', 18500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), false),
-  ('AP Royal Oak 15500ST', 'ap-royal-oak', 'Blue dial, steel bracelet. Iconic octagonal bezel.', 42500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'audemars-piguet'), false),
-  ('Cartier Love Bracelet SM', 'cartier-love-sm', '18K yellow gold. The eternal symbol of love.', 7500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), false),
+  -- Rolex (8 products)
+  ('Rolex Daytona 116500LN', 'rolex-daytona', 'Ceramic bezel, white dial. The definitive chronograph.', 32500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), true),
+  ('Rolex Submariner Date 126610LN', 'rolex-submariner', 'Ceramic bezel, black dial. The diver''s benchmark.', 18500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), true),
+  ('Rolex GMT-Master II Batman', 'rolex-gmt-batman', 'Blue & black ceramic bezel. The traveler''s choice.', 22500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), true),
+  ('Rolex Datejust 41', 'rolex-datejust-41', 'Fluted bezel, jubilee bracelet. Timeless elegance.', 14500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), true),
+  ('Rolex Day-Date 40', 'rolex-day-date-40', '18K yellow gold. The president''s watch.', 48500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), false),
+  ('Rolex Explorer 36', 'rolex-explorer-36', 'The adventurer''s essential. Clean, rugged, iconic.', 10500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), false),
+  ('Rolex Sky-Dweller', 'rolex-sky-dweller', 'Annual calendar, dual time zone. Precision complexity.', 27500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), false),
+  ('Rolex Yacht-Master 42', 'rolex-yacht-master-42', 'Titanium case, matte black bezel. The sailor''s dream.', 26500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'rolex'), false),
+
+  -- Audemars Piguet (4 products)
+  ('AP Royal Oak 15500ST', 'ap-royal-oak', 'Blue dial, steel bracelet. Iconic octagonal bezel.', 42500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'audemars-piguet'), true),
+  ('AP Royal Oak Offshore 26420ST', 'ap-royal-oak-offshore', 'Chronograph, black ceramic pushers. Bold and muscular.', 38500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'audemars-piguet'), true),
+  ('AP Royal Oak Jumbo 15202ST', 'ap-royal-oak-jumbo', 'The original. Ultra-thin, 39mm. Collector grail.', 65000, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'audemars-piguet'), false),
+  ('AP Royal Oak Selfwinding 41mm', 'ap-royal-oak-41mm', 'Green dial, rose gold. Modern sophistication.', 52500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'audemars-piguet'), false),
+
+  -- Cartier (5 products)
+  ('Cartier Love Bracelet SM', 'cartier-love-sm', '18K yellow gold. The eternal symbol of love.', 7500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), true),
   ('Cartier Panthere', 'cartier-panthere', 'Medium model, steel & gold. The feline icon.', 12400, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), false),
-  ('Louis Vuitton Neverfull MM', 'lv-neverfull-mm', 'Damier Azur canvas. The iconic tote.', 2150, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), false),
-  ('Dior Saddle Bag', 'dior-saddle', 'Blue Oblique canvas. A true collector''s piece.', 4200, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'dior'), false),
+  ('Cartier Tank Louis Cartier', 'cartier-tank-louis', '18K gold, manual wind. The timeless rectangle.', 18500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), true),
+  ('Cartier Ballon Bleu 33mm', 'cartier-ballon-bleu', 'Steel, guilloche dial. Floating elegance.', 9200, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), false),
+  ('Cartier Santos de Cartier', 'cartier-santos', 'Steel, square bezel. The original pilots watch.', 10500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'cartier'), true),
+
+  -- Louis Vuitton (7 products)
+  ('Louis Vuitton Neverfull MM', 'lv-neverfull-mm', 'Damier Azur canvas. The iconic tote.', 2150, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), true),
+  ('Louis Vuitton Louis Vuitton Wallet', 'lv-wallet-1', 'Louis Vuitton luxury wallet', 130, 'https://i.ibb.co/Mk376wqV/1773329923211-2f148b38.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), false),
+  ('Louis Vuitton Bag', 'lv-bag', 'Louis Vuitton luxury bag', 300, 'https://i.ibb.co/8L6zccv0/1773330962788-20fb4c93.webp', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), false),
+  ('Louis Vuitton Speedy Bandouliere 25', 'lv-speedy-25', 'Monogram canvas. The classic city bag.', 1850, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), true),
+  ('Louis Vuitton Alma BB', 'lv-alma-bb', 'Damier Ebene. Structured, elegant, timeless.', 2050, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), false),
+  ('Louis Vuitton Onthego MM', 'lv-onthego-mm', 'Giant Monogram. The modern tote.', 2350, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), false),
+  ('Louis Vuitton Keepall 55', 'lv-keepall-55', 'Monogram canvas. The iconic travel duffle.', 2650, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), true),
+
+  -- Dior (3 products)
+  ('Dior Saddle Bag', 'dior-saddle', 'Blue Oblique canvas. A true collector''s piece.', 4200, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'dior'), true),
+  ('Dior Lady Dior Small', 'dior-lady-dior', 'Cannage stitching, pale gold hardware. Grace incarnate.', 5800, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'dior'), true),
+  ('Dior Book Tote', 'dior-book-tote', 'Oblique embroidery. The maximalist carryall.', 3500, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'dior'), false),
+
+  -- Goyard (8 products)
   ('Goyard Belvedere PM', 'goyard-belvedere', 'Chevron canvas. Understated Parisian elegance.', 3200, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
-  
-  -- Top 10 Products Of The Month
-  ('louis vuitton Bag', 'lv-bag', 'Louis Vuitton luxury bag', 300, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330962788-20fb4c93.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), true),
-  ('louis vuitton Wallet', 'lv-wallet-1', 'Louis Vuitton luxury wallet', 130, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'louis-vuitton'), true),
-  ('Goyard', 'goyard-1', 'Goyard exclusive card holder', 40, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
-  ('Goyard', 'goyard-2', 'Goyard exclusive card holder', 50, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330768070-ac7832d7.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
-  ('Goyard Wallet', 'goyard-wallet-1', 'Classic Goyard compact wallet', 90, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330697740-7a217cc9.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
-  ('Goyard Wallet', 'goyard-wallet-2', 'Classic Goyard bi-fold wallet', 130, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330653497-8e02497e.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
-  ('Goyard Wallet', 'goyard-wallet-3', 'Classic Goyard zip wallet', 120, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330623390-6091333f.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
-  ('Goyard Wallet', 'goyard-wallet-4', 'Classic Goyard long wallet', 140, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330601858-f8d18d1d.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
-  ('Goyard Wallet', 'goyard-wallet-5', 'Classic Goyard travel organizer', 140, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330579707-428fd7e5.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true),
-  ('Goyard', 'goyard-3', 'Goyard luxury pouch', 170, 'https://aprlqajbairipommvnra.supabase.co/storage/v1/object/public/product-images/products/1773330346720-3fe315ed.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), true)
+  ('Goyard Card Holder', 'goyard-1', 'Goyard exclusive card holder', 40, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
+  ('Goyard Card Holder', 'goyard-2', 'Goyard exclusive card holder', 50, 'https://i.ibb.co/YBnqxRbH/1773330768070-ac7832d7.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
+  ('Goyard Compact Wallet', 'goyard-wallet-1', 'Classic Goyard compact wallet', 90, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
+  ('Goyard Bi-Fold Wallet', 'goyard-wallet-2', 'Classic Goyard bi-fold wallet', 130, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
+  ('Goyard Zip Wallet', 'goyard-wallet-3', 'Classic Goyard zip wallet', 120, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
+  ('Goyard Long Wallet', 'goyard-wallet-4', 'Classic Goyard long wallet', 140, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
+  ('Goyard Travel Organizer', 'goyard-wallet-5', 'Classic Goyard travel organizer', 140, 'https://i.ibb.co/qYZT52bt/1773330805293-6e5754d4.jpg', (SELECT id FROM public.categories WHERE slug = 'goyard'), false),
+
+  -- Frames (4 products)
+  ('Cartier Rimless', 'frames-cartier-rimless', 'Cartier rimless frames. Understated Parisian elegance.', 850, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'frames'), false),
+  ('Dior Lady Dior Sunglasses', 'frames-dior-sunglasses', 'Dior gradient cat-eye. Haute couture for your eyes.', 620, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'frames'), false),
+  ('LV Millionaire Sunglasses', 'frames-lv-millionaire', 'Louis Vuitton Millionaire. The iconic trendsetter.', 1050, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'frames'), false),
+  ('Goyard Frames', 'frames-goyard', 'Goyard chevron frames. Rare and exclusive.', 1200, 'https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg', (SELECT id FROM public.categories WHERE slug = 'frames'), false)
 ON CONFLICT (slug) DO NOTHING;
 
 -- ═══ 3. PROFILES ═══
