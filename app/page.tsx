@@ -272,6 +272,109 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ═══ SECTION 2.6 — Shop Across Categories ═══ */}
+      <section className="py-14 sm:py-20 bg-[var(--color-surface-default)]">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="mb-12">
+            <span className="text-[var(--color-brand-400)] text-xs sm:text-sm font-bold tracking-widest uppercase">
+              Categories
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mt-2">
+              Shop Across Categories
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-auto md:h-[600px]">
+            {/* Cartier Card */}
+            <Link
+              href="/collections?category=cartier"
+              className="relative rounded-[28px] sm:rounded-[40px] overflow-hidden border border-white/5 group bg-[#111] h-[430px] sm:h-[500px] md:h-auto cursor-pointer block transition-all duration-300 hover:border-[var(--color-brand-400)]/30 hover:shadow-[0_0_30px_rgba(204,255,0,0.05)]"
+            >
+              <div className="absolute inset-x-0 top-0 p-6 sm:p-10 z-10 text-center">
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">Cartier</h3>
+                <p className="text-gray-400 mb-6 font-medium text-sm sm:text-base">Explore Cartier</p>
+                <div className="inline-block px-6 py-2 rounded-full border border-white/20 text-white font-bold text-sm group-hover:bg-[var(--color-brand-400)] group-hover:text-black group-hover:border-[var(--color-brand-400)] transition-all duration-300">
+                  Shop Now
+                </div>
+              </div>
+              <div className="absolute inset-0 pt-28 sm:pt-32 flex items-center justify-center">
+                <img
+                  alt="Cartier"
+                  className="object-contain w-[86%] h-[86%] group-hover:scale-105 group-hover:-translate-y-2 transition-all duration-700 ease-out"
+                  src="/cable_car_watches.png"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 pointer-events-none"></div>
+            </Link>
+
+            {/* Right Column Container */}
+            <div className="flex flex-col gap-6 md:grid md:grid-rows-2">
+              {/* Row 1: Rolex and Audemars Piguet */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 h-auto md:h-auto">
+                {/* Rolex Card */}
+                <Link
+                  href="/collections?category=rolex"
+                  className="relative rounded-[28px] sm:rounded-[40px] overflow-hidden border border-white/5 group bg-[#111] p-5 sm:p-6 flex flex-col items-center text-center cursor-pointer min-h-[260px] transition-all duration-300 hover:border-[var(--color-brand-400)]/30 hover:shadow-[0_0_30px_rgba(204,255,0,0.05)]"
+                >
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Rolex</h3>
+                  <p className="text-xs text-gray-500 mb-4">Browse Rolex</p>
+                  <div className="px-4 py-1.5 rounded-full border border-white/20 text-white text-xs font-bold group-hover:bg-[var(--color-brand-400)] group-hover:text-black group-hover:border-[var(--color-brand-400)] transition-all duration-300 mb-4">
+                    Shop Now
+                  </div>
+                  <div className="flex-1 w-full relative min-h-[120px]">
+                    <img
+                      alt="Rolex"
+                      className="object-contain p-2 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-700 ease-out absolute inset-0 w-full h-full"
+                      src="/cable_car_watches.png"
+                    />
+                  </div>
+                </Link>
+
+                {/* Audemars Piguet Card */}
+                <Link
+                  href="/collections?category=audemars-piguet"
+                  className="relative rounded-[28px] sm:rounded-[40px] overflow-hidden border border-white/5 group bg-[#111] p-5 sm:p-6 flex flex-col items-center text-center cursor-pointer min-h-[260px] transition-all duration-300 hover:border-[var(--color-brand-400)]/30 hover:shadow-[0_0_30px_rgba(204,255,0,0.05)]"
+                >
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1">Audemars Piguet</h3>
+                  <p className="text-xs text-gray-500 mb-4">Browse Audemars Piguet</p>
+                  <div className="px-4 py-1.5 rounded-full border border-white/20 text-white text-xs font-bold group-hover:bg-[var(--color-brand-400)] group-hover:text-black group-hover:border-[var(--color-brand-400)] transition-all duration-300 mb-4">
+                    Shop Now
+                  </div>
+                  <div className="flex-1 w-full relative min-h-[120px]">
+                    <img
+                      alt="Audemars Piguet"
+                      className="object-contain p-2 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-700 ease-out absolute inset-0 w-full h-full"
+                      src="/cable_car_watches.png"
+                    />
+                  </div>
+                </Link>
+              </div>
+
+              {/* Row 2: Dior Card */}
+              <Link
+                href="/collections?category=dior"
+                className="relative rounded-[28px] sm:rounded-[40px] overflow-hidden border border-white/5 group bg-[#111] flex items-center justify-between p-5 sm:p-10 h-[260px] sm:h-[280px] md:h-auto cursor-pointer transition-all duration-300 hover:border-[var(--color-brand-400)]/30 hover:shadow-[0_0_30px_rgba(204,255,0,0.05)]"
+              >
+                <div className="z-10 relative max-w-[52%] sm:max-w-[50%]">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Dior</h3>
+                  <p className="text-gray-400 mb-6 text-xs sm:text-sm">Explore Dior</p>
+                  <div className="inline-block px-6 py-2 rounded-full border border-white/20 text-white font-bold text-sm group-hover:bg-[var(--color-brand-400)] group-hover:text-black group-hover:border-[var(--color-brand-400)] transition-all duration-300">
+                    Shop Now
+                  </div>
+                </div>
+                <div className="absolute right-0 bottom-0 w-[60%] h-[90%]">
+                  <img
+                    alt="Dior"
+                    className="object-contain w-full h-full group-hover:scale-105 group-hover:-translate-y-1 transition-all duration-700 ease-out absolute inset-0"
+                    src="/cable_car_watches.png"
+                  />
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══ SECTION 3 — Top 10 ═══ */}
       <section className="py-16 bg-[var(--color-surface-raised)]">
         <div className="max-w-[1400px] mx-auto px-6">
