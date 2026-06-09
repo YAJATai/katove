@@ -1,13 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
-  <circle cx="50" cy="50" r="48" fill="#121212" />
-  <g fill="#ffffff" stroke="#121212" stroke-width="1" stroke-linejoin="round" stroke-linecap="round">
-    <!-- Left Ear -->
-    <path d="M35 22 L49 35 L43 45 L29 32 Z" />
-    <!-- Right Ear -->
-    <path d="M54 28 L63 46 L55 49 L47 31 Z" />
-    <!-- Face structure -->
-    <path d="M31 54 L49 43 L61 51 L44 68 Z" />
-    <!-- Nose / Cheek details -->
-    <path d="M37 59 L43 68 L49 61" fill="none" stroke="#121212" stroke-width="2" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="48" fill="#111"/>
+  <g fill="#fff" transform="translate(0, 3)">
+    <!-- Left ear -->
+    <path d="M 35 25 L 45 28 L 52 45 L 40 42 Z" />
+    <!-- Right ear -->
+    <path d="M 54 28 L 63 30 L 63 55 L 53 48 Z" />
+    <!-- Head -->
+    <path d="M 35 52 L 52 45 L 66 56 L 66 70 L 52 80 L 37 72 L 37 65 L 41 67 L 43 65 L 39 62 L 35 60 Z" />
   </g>
 </svg>
