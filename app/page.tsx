@@ -247,7 +247,7 @@ export default function HomePage() {
             <img 
               src="/katove_banner.png" 
               alt="Exclusive Technology Banner" 
-              className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay scale-105"
+              className="absolute inset-0 w-full h-full object-cover opacity-60 scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/80 pointer-events-none" />
             
