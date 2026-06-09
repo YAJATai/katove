@@ -2,7 +2,7 @@
 
 import HeroSection from "@/components/HeroSection";
 import { useEffect, useState, useRef } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, ShoppingBag, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShoppingBag, Check } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import Link from "next/link";
 import type { Product, Category } from "@/lib/types";
@@ -76,6 +76,8 @@ const fallbackProducts: Product[] = [
   { id: "prod-5", name: "Dior Saddle Bag", slug: "dior-saddle", description: "Blue Oblique canvas. A true collector's piece.", price: 4200, image_url: "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg", category_id: "cat-5", categories: { name: "Dior", slug: "dior" }, is_top_pick: true, created_at: "" },
 ];
 
+const FALLBACK_IMG = "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg";
+
 function SkeletonCard() {
   return (
     <div className="min-w-[280px] md:min-w-[320px] rounded-xl bg-[var(--color-surface-overlay)] border border-[var(--color-border-default)] overflow-hidden flex-shrink-0">
@@ -111,35 +113,23 @@ export default function HomePage() {
           supabase.from("products").select("*, categories!inner(name, slug)").eq("is_top_pick", true).limit(10),
         ]);
         if (cats && cats.length > 0) setCategories(cats);
-        
-        // Use DB latest products but override incorrect images if necessary
         if (latest && latest.length > 0) {
           const mappedLatest = latest.map((p: any) => {
-            if (p.image_url === "https://i.ibb.co/x8KtRW7c/1773330843831-4ee70b0f.jpg" && p.name.toLowerCase().includes("louis vuitton")) {
+            if (p.image_url === FALLBACK_IMG && p.name.toLowerCase().includes("louis vuitton")) {
               return { ...p, image_url: "https://i.ibb.co/Mk376wqV/1773329923211-2f148b38.jpg" };
             }
             return p;
           });
-          
-          // Re-order to match screen: Bag, Wallet, Goyard 40, Goyard 50
           const orderedLatest: Product[] = [];
           const bag = mappedLatest.find((p: any) => p.slug === "lv-bag");
           const wallet = mappedLatest.find((p: any) => p.slug === "lv-wallet-1");
           const goyard1 = mappedLatest.find((p: any) => p.slug === "goyard-1");
           const goyard2 = mappedLatest.find((p: any) => p.slug === "goyard-2");
-          
           if (bag) orderedLatest.push(bag);
           if (wallet) orderedLatest.push(wallet);
           if (goyard1) orderedLatest.push(goyard1);
           if (goyard2) orderedLatest.push(goyard2);
-          
-          // Add remaining products
-          mappedLatest.forEach((p: any) => {
-            if (!orderedLatest.some(ol => ol.id === p.id)) {
-              orderedLatest.push(p);
-            }
-          });
-          
+          mappedLatest.forEach((p: any) => { if (!orderedLatest.some(ol => ol.id === p.id)) orderedLatest.push(p); });
           setLatestProducts(orderedLatest);
         }
         if (top && top.length > 0) setTopProducts(top);
@@ -166,7 +156,7 @@ export default function HomePage() {
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <span className="text-[#22c55e] text-xs font-bold tracking-[0.15em] uppercase">
+              <span className="text-[var(--color-brand-400)] text-xs font-bold tracking-[0.15em] uppercase">
                 Collections
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-white mt-2">
@@ -174,86 +164,74 @@ export default function HomePage() {
               </h2>
             </div>
             <div className="hidden md:flex items-center gap-2">
-              <button
-                onClick={() => scrollLeft(latestScrollRef)}
-                className="w-10 h-10 rounded-full bg-black border border-white/10 flex items-center justify-center hover:bg-[#22c55e] hover:text-black transition-all duration-150 active:scale-[0.97]"
-              >
+              <button onClick={() => scrollLeft(latestScrollRef)} className="w-10 h-10 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <button
-                onClick={() => scrollRight(latestScrollRef)}
-                className="w-10 h-10 rounded-full bg-black border border-white/10 flex items-center justify-center hover:bg-[#22c55e] hover:text-black transition-all duration-150 active:scale-[0.97]"
-              >
+              <button onClick={() => scrollRight(latestScrollRef)} className="w-10 h-10 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
 
           <div className="relative">
-            <div
-              ref={latestScrollRef}
-              className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide scroll-smooth"
-            >
+            <div ref={latestScrollRef} className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide scroll-smooth">
               {loadingLatest ? (
                 Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
               ) : (
-                latestProducts.slice(0, 8).map((product, idx) => (
+                latestProducts.slice(0, 8).map((product) => (
                   <div
                     key={product.id}
-                    className="group min-w-[280px] md:min-w-[320px] rounded-2xl overflow-hidden bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] flex-shrink-0 card-hover hover:border-[var(--color-border-accent)] aspect-[3/4] relative"
+                    className="group min-w-[280px] md:min-w-[320px] rounded-xl overflow-hidden bg-[var(--color-surface-raised)] border border-[var(--color-border-default)] flex-shrink-0 card-hover hover:border-[var(--color-border-accent)] flex flex-col"
                   >
-                    <Link href={`/collections?product=${product.slug}`} className="block w-full h-full relative overflow-hidden bg-[var(--color-surface-overlay)]">
-                      {product.image_url ? (
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <ShoppingBag className="w-10 h-10 text-[var(--color-text-tertiary)]" />
-                        </div>
-                      )}
-                      
-                      {/* Gradient overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-                      
-                      {/* New Arrival Badge on first item */}
-                      {idx === 0 && (
-                        <div className="absolute top-4 left-4 z-20">
-                          <span className="bg-[#22c55e] text-black text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
-                            New Arrival
-                          </span>
-                        </div>
-                      )}
-                      
-                      {/* Product Info */}
-                      <div className="absolute bottom-5 left-5 right-5 z-10 flex flex-col gap-2">
-                        <h3 className="text-white text-lg md:text-xl font-bold leading-tight tracking-tight">{product.name}</h3>
-                        <div className="flex items-center justify-between">
-                          <span className="text-[#22c55e] font-bold text-base">
-                            ₾{product.price.toFixed(2)}
-                          </span>
-                          <span className="text-xs text-white font-bold uppercase tracking-wider underline hover:text-[#22c55e] transition-colors duration-150 shrink-0">
-                            Shop Now
-                          </span>
-                        </div>
-                      </div>
+                    {/* Image area */}
+                    <Link href={`/collections?product=${product.slug}`} className="block aspect-[3/4] relative overflow-hidden bg-[var(--color-surface-overlay)]">
+                      <img
+                        src={product.image_url || FALLBACK_IMG}
+                        alt={product.name}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => { if (e.currentTarget.src !== FALLBACK_IMG) e.currentTarget.src = FALLBACK_IMG; }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                     </Link>
+
+                    {/* Info overlay at bottom of image */}
+                    <div className="absolute bottom-0 left-0 right-0 z-10 p-4 pointer-events-none">
+                      <h3 className="text-white font-bold text-lg leading-tight">{product.name}</h3>
+                      <p className="text-[var(--color-text-tertiary)] text-xs mt-0.5">
+                        {product.categories?.name || "Product"}
+                      </p>
+                      <div className="flex items-center justify-between mt-2 pointer-events-auto">
+                        <span className="text-[var(--color-brand-400)] font-bold text-base">
+                          ₾{product.price.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* ADD button — slides up on hover */}
+                    <div className="absolute inset-0 z-20 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button
+                        onClick={() => handleAdd(product)}
+                        className={`w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 active:scale-[0.97] ${
+                          addedIds.has(product.id)
+                            ? "bg-[var(--color-brand-400)] text-black"
+                            : "bg-white/90 backdrop-blur-sm text-black hover:bg-[var(--color-brand-400)]"
+                        }`}
+                      >
+                        {addedIds.has(product.id) ? (
+                          <span className="flex items-center justify-center gap-1.5"><Check className="w-3 h-3" /> Added</span>
+                        ) : (
+                          "Add to Cart"
+                        )}
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
             </div>
-            <button
-              onClick={() => scrollLeft(latestScrollRef)}
-              className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150"
-            >
+            <button onClick={() => scrollLeft(latestScrollRef)} className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <button
-              onClick={() => scrollRight(latestScrollRef)}
-              className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150"
-            >
+            <button onClick={() => scrollRight(latestScrollRef)} className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -276,26 +254,17 @@ export default function HomePage() {
               </p>
             </div>
             <div className="hidden md:flex items-center gap-2">
-              <button
-                onClick={() => scrollLeft(topScrollRef)}
-                className="w-10 h-10 rounded-full bg-[var(--color-surface-default)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]"
-              >
+              <button onClick={() => scrollLeft(topScrollRef)} className="w-10 h-10 rounded-full bg-[var(--color-surface-default)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]">
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <button
-                onClick={() => scrollRight(topScrollRef)}
-                className="w-10 h-10 rounded-full bg-[var(--color-surface-default)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]"
-              >
+              <button onClick={() => scrollRight(topScrollRef)} className="w-10 h-10 rounded-full bg-[var(--color-surface-default)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
 
           <div className="relative">
-            <div
-              ref={topScrollRef}
-              className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide scroll-smooth"
-            >
+            <div ref={topScrollRef} className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide scroll-smooth">
               {loadingTop ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <div key={i} className="min-w-[260px] rounded-xl bg-[var(--color-surface-overlay)] border border-[var(--color-border-default)] overflow-hidden flex-shrink-0 skeleton" style={{ height: 340 }} />
@@ -313,25 +282,21 @@ export default function HomePage() {
                       </span>
                     </div>
 
-                    {/* Product image */}
                     <Link href={`/collections?product=${product.slug}`} className="block aspect-square bg-[var(--color-surface-overlay)] flex items-center justify-center p-6 mx-4 rounded-lg">
-                      {product.image_url ? (
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <ShoppingBag className="w-10 h-10 text-[var(--color-text-tertiary)]" />
-                      )}
+                      <img
+                        src={product.image_url || FALLBACK_IMG}
+                        alt={product.name}
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => { if (e.currentTarget.src !== FALLBACK_IMG) e.currentTarget.src = FALLBACK_IMG; }}
+                      />
                     </Link>
 
                     <div className="p-4 flex flex-col flex-1">
                       <p className="text-[var(--color-text-tertiary)] text-[10px] uppercase tracking-wider font-medium">
-                        Exclusive Product
+                        {product.categories?.name || "Exclusive Product"}
                       </p>
                       <Link href={`/collections?product=${product.slug}`}>
-                        <h3 className="text-white font-bold text-sm leading-tight mt-1 group-hover:text-[var(--color-brand-400)] transition-colors duration-200">
+                        <h3 className="text-white font-bold text-sm leading-tight mt-0.5 group-hover:text-[var(--color-brand-400)] transition-colors duration-200">
                           {product.name}
                         </h3>
                       </Link>
@@ -341,19 +306,16 @@ export default function HomePage() {
                         </span>
                         <button
                           onClick={() => handleAdd(product)}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 active:scale-[0.93] ${
+                          className={`text-xs font-bold uppercase tracking-wider rounded-lg px-3 py-1.5 transition-all duration-200 active:scale-[0.97] ${
                             addedIds.has(product.id)
                               ? "bg-[var(--color-brand-400)] text-black"
-                              : "bg-[var(--color-brand-400)] text-black hover:scale-110"
+                              : "bg-white text-black hover:bg-[var(--color-brand-400)]"
                           }`}
                         >
                           {addedIds.has(product.id) ? (
-                            <Check className="w-4 h-4" />
+                            <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Added</span>
                           ) : (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                              <line x1="12" y1="5" x2="12" y2="19" />
-                              <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
+                            "ADD +"
                           )}
                         </button>
                       </div>
@@ -362,16 +324,10 @@ export default function HomePage() {
                 ))
               )}
             </div>
-            <button
-              onClick={() => scrollLeft(topScrollRef)}
-              className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150"
-            >
+            <button onClick={() => scrollLeft(topScrollRef)} className="md:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <button
-              onClick={() => scrollRight(topScrollRef)}
-              className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150"
-            >
+            <button onClick={() => scrollRight(topScrollRef)} className="md:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-black/80 border border-white/20 flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
