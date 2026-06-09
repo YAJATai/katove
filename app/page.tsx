@@ -196,8 +196,10 @@ export default function HomePage() {
 
                     {/* Info overlay at bottom of image */}
                     <div className="absolute bottom-0 left-0 right-0 z-10 p-4 pointer-events-none">
-                      <h3 className="text-white font-bold text-lg leading-tight">{product.name}</h3>
-                      <p className="text-[var(--color-text-tertiary)] text-xs mt-0.5">
+                      <Link href={`/collections?product=${product.slug}`} className="pointer-events-auto hover:text-[var(--color-brand-400)] transition-colors inline-block">
+                        <h3 className="text-white font-bold text-lg leading-tight">{product.name}</h3>
+                      </Link>
+                      <p className="text-[var(--color-text-tertiary)] text-xs mt-0.5 pointer-events-auto">
                         {product.categories?.name || "Product"}
                       </p>
                       <div className="flex items-center justify-between mt-2 pointer-events-auto">
@@ -208,10 +210,10 @@ export default function HomePage() {
                     </div>
 
                     {/* ADD button — slides up on hover */}
-                    <div className="absolute inset-0 z-20 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="absolute inset-0 z-20 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                       <button
-                        onClick={() => handleAdd(product)}
-                        className={`w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 active:scale-[0.97] ${
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAdd(product); }}
+                        className={`pointer-events-auto w-full py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 active:scale-[0.97] ${
                           addedIds.has(product.id)
                             ? "bg-[var(--color-brand-400)] text-black"
                             : "bg-white/90 backdrop-blur-sm text-black hover:bg-[var(--color-brand-400)]"
@@ -305,8 +307,8 @@ export default function HomePage() {
                           ₾{product.price.toFixed(2)}
                         </span>
                         <button
-                          onClick={() => handleAdd(product)}
-                          className={`text-xs font-bold uppercase tracking-wider rounded-lg px-3 py-1.5 transition-all duration-200 active:scale-[0.97] ${
+                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAdd(product); }}
+                          className={`pointer-events-auto text-xs font-bold uppercase tracking-wider rounded-lg px-3 py-1.5 transition-all duration-200 active:scale-[0.97] ${
                             addedIds.has(product.id)
                               ? "bg-[var(--color-brand-400)] text-black"
                               : "bg-white text-black hover:bg-[var(--color-brand-400)]"
