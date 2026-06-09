@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, User, ShoppingBag, Menu, X, Rabbit } from "lucide-react";
+import { Search, User, ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
 import { useState, useEffect } from "react";
@@ -63,7 +63,6 @@ export default function Navbar() {
             href="/"
             className="flex items-center gap-2 text-xl md:text-2xl font-extrabold tracking-wider italic text-white hover:text-[var(--color-brand-400)] transition-colors duration-200 uppercase"
           >
-            <Rabbit className="w-6 h-6 md:w-8 md:h-8" />
             KATOVE
           </Link>
 
