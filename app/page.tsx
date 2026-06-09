@@ -166,7 +166,7 @@ export default function HomePage() {
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="flex items-end justify-between mb-10">
             <div>
-              <span className="text-[var(--color-brand-400)] text-xs font-bold tracking-[0.15em] uppercase">
+              <span className="text-[#22c55e] text-xs font-bold tracking-[0.15em] uppercase">
                 Collections
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-white mt-2">
@@ -176,13 +176,13 @@ export default function HomePage() {
             <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={() => scrollLeft(latestScrollRef)}
-                className="w-10 h-10 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]"
+                className="w-10 h-10 rounded-full bg-black border border-white/10 flex items-center justify-center hover:bg-[#22c55e] hover:text-black transition-all duration-150 active:scale-[0.97]"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={() => scrollRight(latestScrollRef)}
-                className="w-10 h-10 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-strong)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all duration-150 active:scale-[0.97]"
+                className="w-10 h-10 rounded-full bg-black border border-white/10 flex items-center justify-center hover:bg-[#22c55e] hover:text-black transition-all duration-150 active:scale-[0.97]"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -216,25 +216,25 @@ export default function HomePage() {
                       )}
                       
                       {/* Gradient overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
                       
                       {/* New Arrival Badge on first item */}
                       {idx === 0 && (
                         <div className="absolute top-4 left-4 z-20">
-                          <span className="bg-[#22c55e] text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                          <span className="bg-[#22c55e] text-black text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
                             New Arrival
                           </span>
                         </div>
                       )}
                       
                       {/* Product Info */}
-                      <div className="absolute bottom-5 left-5 right-5 z-10">
-                        <div className="flex items-end justify-between">
-                          <div>
-                            <p className="text-white text-base font-bold leading-tight tracking-tight">{product.name}</p>
-                            <p className="text-[#ccff00] text-sm font-bold mt-1.5">₾{product.price.toFixed(2)}</p>
-                          </div>
-                          <span className="text-xs text-white font-bold uppercase tracking-wider underline hover:text-[#ccff00] transition-colors duration-150 shrink-0">
+                      <div className="absolute bottom-5 left-5 right-5 z-10 flex flex-col gap-2">
+                        <h3 className="text-white text-lg md:text-xl font-bold leading-tight tracking-tight">{product.name}</h3>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[#22c55e] font-bold text-base">
+                            ₾{product.price.toFixed(2)}
+                          </span>
+                          <span className="text-xs text-white font-bold uppercase tracking-wider underline hover:text-[#22c55e] transition-colors duration-150 shrink-0">
                             Shop Now
                           </span>
                         </div>
