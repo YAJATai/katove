@@ -7,10 +7,10 @@ import { useState, FormEvent, useRef } from "react";
 import Link from "next/link";
 
 const BANK_DETAILS = {
-  bank: "TBC Bank",
-  account_name: "Katove LLC",
-  account_number: "GE29TB0000000012345678",
-  bank_code: "TBCBGE22",
+  bank: "BOG (Bank of Georgia)",
+  account_name: "ს.მ",
+  account_number: "GE84BG0000000611584686",
+  bank_code: "BAGAGE22",
   currency: "GEL",
   note: "Use your order reference as payment description.",
 };
