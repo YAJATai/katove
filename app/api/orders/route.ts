@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { customer_name, customer_email, customer_phone, customer_address, address, items, total, user_id } = body;
+    const { customer_name, customer_email, customer_phone, customer_address, address, items, total, user_id, payment_method, payment_screenshot_url } = body;
 
     if (!customer_name || !customer_email || !items || !total) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -47,6 +47,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const statusVal = payment_method === "bank_transfer" ? "awaiting_payment" : "pending";
+
     const { data, error } = await supabase
       .from("orders")
       .insert({
@@ -58,7 +60,9 @@ export async function POST(req: NextRequest) {
         address_id,
         items,
         total,
-        status: "pending",
+        payment_method: payment_method || "bank_transfer",
+        payment_screenshot_url: payment_screenshot_url || null,
+        status: statusVal,
       })
       .select()
       .single();

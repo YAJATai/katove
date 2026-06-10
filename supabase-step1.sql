@@ -114,7 +114,9 @@ CREATE TABLE public.orders (
   customer_address TEXT,
   items JSONB NOT NULL DEFAULT '[]',
   total DOUBLE PRECISION NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending',
+  payment_method TEXT NOT NULL DEFAULT 'bank_transfer',
+  payment_screenshot_url TEXT,
+  status TEXT NOT NULL DEFAULT 'awaiting_payment',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;

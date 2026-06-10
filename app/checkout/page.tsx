@@ -2,13 +2,29 @@
 
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
-import { ShoppingBag, ArrowLeft, CheckCircle, User, Mail, Phone, MapPin, Home, Building, Globe, Hash } from "lucide-react";
-import { useState, FormEvent } from "react";
+import { ShoppingBag, ArrowLeft, CheckCircle, User, Mail, Phone, MapPin, Home, Building, Globe, Hash, Copy, Check, Upload, Banknote } from "lucide-react";
+import { useState, FormEvent, useRef } from "react";
 import Link from "next/link";
+
+const BANK_DETAILS = {
+  bank: "TBC Bank",
+  account_name: "Katove LLC",
+  account_number: "GE29TB0000000012345678",
+  bank_code: "TBCBGE22",
+  currency: "GEL",
+  note: "Use your order reference as payment description.",
+};
+
+function formatAccountNumber(num: string) {
+  const parts: string[] = [];
+  for (let i = 0; i < num.length; i += 4) parts.push(num.slice(i, i + 4));
+  return parts.join(" ");
+}
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -19,15 +35,55 @@ export default function CheckoutPage() {
     postal_code: "",
     country: "Georgia",
   });
+  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setScreenshot(file);
+    setScreenshotPreview(URL.createObjectURL(file));
+  };
+
+  const uploadScreenshot = async (): Promise<string | null> => {
+    if (!screenshot) return null;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", screenshot);
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.url) {
+        setScreenshotUrl(data.url);
+        return data.url;
+      }
+      if (data.demo) return null;
+      return null;
+    } catch {
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const copyAccount = () => {
+    navigator.clipboard.writeText(BANK_DETAILS.account_number);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (items.length === 0) return;
     setSubmitting(true);
     try {
+      const url = await uploadScreenshot();
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -45,6 +101,8 @@ export default function CheckoutPage() {
           },
           items: items.map((i) => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
           total: totalPrice,
+          payment_method: "bank_transfer",
+          payment_screenshot_url: url,
         }),
       });
       const data = await res.json();
@@ -65,12 +123,22 @@ export default function CheckoutPage() {
           <div className="bg-gradient-to-br from-[var(--color-surface-overlay)] to-[var(--color-surface-raised)] border border-[var(--color-border-accent)] rounded-2xl p-12 animate-scale-in">
             <CheckCircle className="w-20 h-20 text-[var(--color-brand-400)] mx-auto mb-6 animate-success-pop" />
             <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-3">Order Placed</h1>
-            <p className="text-[var(--color-text-secondary)] mb-2">
-              Thank you for your order. We&apos;ll reach out within 24 hours.
+            <p className="text-[var(--color-text-secondary)] mb-6">
+              Please transfer <span className="text-[var(--color-brand-400)] font-bold">₾{totalPrice.toFixed(2)}</span> to the account below and upload your payment screenshot to confirm.
             </p>
-            <p className="text-[var(--color-text-tertiary)] text-sm mb-8">
-              Reference: {orderId.slice(0, 8)}...
+
+            <div className="bg-[var(--color-surface-default)] border border-[var(--color-border-default)] rounded-xl p-5 mb-6 text-left space-y-2">
+              <p className="text-xs text-[var(--color-text-tertiary)]">Reference: <span className="text-[var(--color-text-primary)] font-mono">{orderId.slice(0, 8)}...</span></p>
+              <p className="text-xs text-[var(--color-text-tertiary)]">Bank: <span className="text-[var(--color-text-primary)]">{BANK_DETAILS.bank}</span></p>
+              <p className="text-xs text-[var(--color-text-tertiary)]">Account Name: <span className="text-[var(--color-text-primary)]">{BANK_DETAILS.account_name}</span></p>
+              <p className="text-xs text-[var(--color-text-tertiary)]">Account Number: <span className="text-[var(--color-text-primary)] font-mono">{formatAccountNumber(BANK_DETAILS.account_number)}</span></p>
+              <p className="text-xs text-[var(--color-text-tertiary)]">Amount: <span className="text-[var(--color-brand-400)] font-bold">₾{totalPrice.toFixed(2)}</span></p>
+            </div>
+
+            <p className="text-[var(--color-text-tertiary)] text-xs mb-8">
+              Our team will confirm your payment within 24 hours and ship your order.
             </p>
+
             <Link
               href="/collections"
               className="btn-primary inline-flex items-center gap-2 bg-[var(--color-brand-400)] text-[var(--color-text-on-primary)] font-bold px-8 py-3.5 rounded-xl hover:bg-white transition-all duration-200 active:scale-[0.98]"
@@ -234,12 +302,71 @@ export default function CheckoutPage() {
               </div>
             </div>
 
+            {/* Payment — Bank Transfer */}
+            <div className="bg-gradient-to-br from-[var(--color-surface-overlay)] to-[var(--color-surface-raised)] border border-[var(--color-border-default)] rounded-2xl p-6 card-hover">
+              <h2 className="text-lg font-bold text-[var(--color-text-primary)] mb-5 flex items-center gap-2">
+                <Banknote className="w-5 h-5 text-[var(--color-brand-400)]" /> Bank Transfer Payment
+              </h2>
+
+              <div className="bg-[var(--color-surface-default)] border border-[var(--color-border-weak)] rounded-xl p-4 mb-5 space-y-2">
+                <p className="text-xs text-[var(--color-text-tertiary)]">Bank</p>
+                <p className="text-sm font-bold text-[var(--color-text-primary)]">{BANK_DETAILS.bank}</p>
+                <p className="text-xs text-[var(--color-text-tertiary)] mt-3">Beneficiary</p>
+                <p className="text-sm font-bold text-[var(--color-text-primary)]">{BANK_DETAILS.account_name}</p>
+                <p className="text-xs text-[var(--color-text-tertiary)] mt-3">Account Number</p>
+                <div className="flex items-center gap-2">
+                  <code className="text-sm font-mono font-bold text-[var(--color-text-primary)] bg-[var(--color-surface-raised)] px-3 py-1.5 rounded-lg border border-[var(--color-border-weak)] flex-1 select-all">
+                    {formatAccountNumber(BANK_DETAILS.account_number)}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={copyAccount}
+                    className="w-9 h-9 rounded-lg bg-[var(--color-surface-raised)] border border-[var(--color-border-weak)] flex items-center justify-center hover:bg-[var(--color-brand-400)] hover:text-black transition-all shrink-0 active:scale-[0.95]"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-xs text-[var(--color-text-tertiary)] mt-3">Bank Code</p>
+                <p className="text-sm font-bold text-[var(--color-text-primary)]">{BANK_DETAILS.bank_code}</p>
+                <p className="text-xs text-[var(--color-text-tertiary)] mt-2">{BANK_DETAILS.note}</p>
+              </div>
+
+              <p className="text-sm text-[var(--color-text-primary)] font-medium mb-3 flex items-center gap-2">
+                <Upload className="w-4 h-4 text-[var(--color-brand-400)]" /> Upload Payment Screenshot
+              </p>
+
+              <div
+                onClick={() => fileRef.current?.click()}
+                className="border-2 border-dashed border-[var(--color-border-strong)] rounded-xl p-6 text-center cursor-pointer hover:border-[var(--color-brand-400)] transition-colors"
+              >
+                {screenshotPreview ? (
+                  <div className="space-y-2">
+                    <img src={screenshotPreview} alt="Screenshot preview" className="max-h-40 mx-auto rounded-lg object-contain" />
+                    <p className="text-xs text-[var(--color-text-tertiary)]">Click to change file</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Upload className="w-8 h-8 text-[var(--color-text-tertiary)] mx-auto" />
+                    <p className="text-sm text-[var(--color-text-tertiary)]">Tap to upload payment receipt</p>
+                    <p className="text-xs text-[var(--color-text-tertiary)] opacity-60">PNG, JPG up to 10MB</p>
+                  </div>
+                )}
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </div>
+            </div>
+
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || !screenshot}
               className="btn-primary w-full bg-[var(--color-brand-400)] text-[var(--color-text-on-primary)] font-bold py-4 rounded-xl hover:bg-white transition-all duration-200 active:scale-[0.98] disabled:opacity-50 text-lg"
             >
-              {submitting ? "Processing..." : `Place Order — ₾${totalPrice.toFixed(2)}`}
+              {uploading ? "Uploading..." : submitting ? "Processing..." : `Place Order — ₾${totalPrice.toFixed(2)}`}
             </button>
           </form>
 
